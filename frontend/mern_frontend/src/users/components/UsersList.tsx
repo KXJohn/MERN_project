@@ -13,9 +13,15 @@ export const UsersList: FC<UsersListProps> = ({ users }) => {
 
   return (
     <div>
-      <ul>
+      <ul className="users-list">
         {users.map((d) => (
-          <UserListItem key={d.id} />
+          <UserListItem
+            key={d.id}
+            imageUrl={d.imageUrl}
+            id={d.id}
+            name={d.name}
+            placeCount={d.placeCount}
+          />
         ))}
       </ul>
     </div>
