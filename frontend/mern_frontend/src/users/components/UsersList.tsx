@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { Users } from "./types.ts";
 import { UserListItem } from "./UserListItem.tsx";
+import { UserListContainer } from "./style.ts";
 
 interface UsersListProps {
   users: ReadonlyArray<Users>;
@@ -12,7 +13,7 @@ export const UsersList: FC<UsersListProps> = ({ users }) => {
   }
 
   return (
-    <div>
+    <UserListContainer>
       <ul className="users-list">
         {users.map((d) => (
           <UserListItem
@@ -24,6 +25,6 @@ export const UsersList: FC<UsersListProps> = ({ users }) => {
           />
         ))}
       </ul>
-    </div>
+    </UserListContainer>
   );
 };
