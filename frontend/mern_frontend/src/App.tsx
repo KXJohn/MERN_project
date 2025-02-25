@@ -9,11 +9,13 @@ function App() {
   return (
     <Fragment>
       <MainNavigation />
-      <Routes>
-        <Route path="/" element={<User />} />
-        <Route path="/places/new" element={<NewPlace />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <main>
+        <Routes>
+          <Route path="/" element={<User />} />
+          <Route path="/places/new" element={<NewPlace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </main>
     </Fragment>
   );
 }
