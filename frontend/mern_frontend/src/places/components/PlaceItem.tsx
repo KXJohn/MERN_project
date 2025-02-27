@@ -2,6 +2,7 @@ import { FC } from "react";
 import { Place } from "../types.ts";
 import styled from "styled-components";
 import { Card } from "../../shared/components/UIElements/Card.tsx";
+import { Button } from "../../shared/components/FormElements/Button.tsx";
 
 const PlaceItemContainer = styled.div`
   .place-item {
@@ -47,6 +48,11 @@ const PlaceItemContainer = styled.div`
 
   .place-item__modal-actions {
     text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+    border-top: 1px solid #ccc;
   }
 
   .place-item__actions button,
@@ -79,9 +85,15 @@ export const PlaceItem: FC<Props> = ({ place }) => {
             <p>{place.address}</p>
           </div>
           <div className="place-item__modal-actions">
-            <button>View on Map</button>
-            <button>Edit</button>
-            <button>Delete</button>
+            <Button inverse onClick={() => {}}>
+              View on Map
+            </Button>
+            <Button to={`/places/${place.id}`} onClick={() => {}}>
+              Edit
+            </Button>
+            <Button danger onClick={() => {}}>
+              Delete
+            </Button>
           </div>
         </Card>
       </li>
