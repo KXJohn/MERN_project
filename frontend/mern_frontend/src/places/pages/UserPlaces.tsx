@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { PlaceList } from "../components/PlaceList.tsx";
 import { Place } from "../types.ts";
+import { useParams } from "react-router-dom";
 
 const DUMMY_PLACES: ReadonlyArray<Place> = [
   {
@@ -32,5 +33,7 @@ const DUMMY_PLACES: ReadonlyArray<Place> = [
 ];
 
 export const UserPlaces: FC = () => {
-  return <PlaceList places={DUMMY_PLACES} />;
+  const userId = useParams().userId;
+  const loadedPlaces = DUMMY_PLACES.filter((d) => d.creator === userId);
+  return <PlaceList places={loadedPlaces} />;
 };
