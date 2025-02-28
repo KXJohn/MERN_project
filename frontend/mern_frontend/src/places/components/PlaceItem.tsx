@@ -1,8 +1,9 @@
-import { FC } from "react";
+import { FC, Fragment, useCallback, useState } from "react";
 import { Place } from "../types.ts";
 import styled from "styled-components";
 import { Card } from "../../shared/components/UIElements/Card.tsx";
 import { Button } from "../../shared/components/FormElements/Button.tsx";
+import { Modal } from "../../shared/components/UIElements/Modal.tsx";
 
 const PlaceItemContainer = styled.div`
   .place-item {
@@ -72,31 +73,56 @@ interface Props {
 }
 
 export const PlaceItem: FC<Props> = ({ place }) => {
+  const [showMap, setShowMap] = useState(false);
+
+  const toggleShowMap = useCallback(() => {
+    setShowMap(!showMap);
+  }, [showMap]);
+
+  const footer = <Button onClick={toggleShowMap}>Close</Button>;
+
   return (
     <PlaceItemContainer>
-      <li className="place-item">
-        <Card className="place-item__content">
-          <div className="place-item__image">
-            <img src={place.imageUrl} alt={place.title} />
-          </div>
-          <div className="place-item__info">
-            <h2>{place.title}</h2>
-            <h3>{place.address}</h3>
-            <p>{place.address}</p>
-          </div>
-          <div className="place-item__modal-actions">
-            <Button inverse onClick={() => {}}>
-              View on Map
-            </Button>
-            <Button to={`/places/${place.id}`} onClick={() => {}}>
-              Edit
-            </Button>
-            <Button danger onClick={() => {}}>
-              Delete
-            </Button>
-          </div>
-        </Card>
-      </li>
+      <Fragment>
+        {showMap && (
+          <Modal
+            show={showMap}
+            onCancel={toggleShowMap}
+            header={place.address}
+            contentClassName="place-item__modal-content"
+            footerClassName="place-item__modal-actions"
+            footer={footer}
+          >
+            <div className="map-container">
+              <h2>Map</h2>
+            </div>
+          </Modal>
+        )}
+
+        <li className="place-item">
+          <Card className="place-item__content">
+            <div className="place-item__image">
+              <img src={place.imageUrl} alt={place.title} />
+            </div>
+            <div className="place-item__info">
+              <h2>{place.title}</h2>
+              <h3>{place.address}</h3>
+              <p>{place.address}</p>
+            </div>
+            <div className="place-item__modal-actions">
+              <Button inverse onClick={toggleShowMap}>
+                View on Map
+              </Button>
+              <Button to={`/places/${place.id}`} onClick={() => {}}>
+                Edit
+              </Button>
+              <Button danger onClick={() => {}}>
+                Delete
+              </Button>
+            </div>
+          </Card>
+        </li>
+      </Fragment>
     </PlaceItemContainer>
   );
 };
