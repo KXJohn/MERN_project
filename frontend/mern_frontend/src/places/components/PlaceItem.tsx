@@ -1,9 +1,10 @@
-import { FC, Fragment, useCallback, useState } from "react";
+import { FC, Fragment, useCallback, useRef, useState } from "react";
 import { Place } from "../types.ts";
 import styled from "styled-components";
 import { Card } from "../../shared/components/UIElements/Card.tsx";
 import { Button } from "../../shared/components/FormElements/Button.tsx";
 import { Modal } from "../../shared/components/UIElements/Modal.tsx";
+import { MapDisplay } from "../../shared/components/UIElements/Map.tsx";
 
 const PlaceItemContainer = styled.div`
   .place-item {
@@ -79,6 +80,7 @@ export const PlaceItem: FC<Props> = ({ place }) => {
     setShowMap(!showMap);
   }, [showMap]);
 
+  const ref = useRef(null);
   const footer = <Button onClick={toggleShowMap}>Close</Button>;
 
   return (
@@ -86,6 +88,7 @@ export const PlaceItem: FC<Props> = ({ place }) => {
       <Fragment>
         {showMap && (
           <Modal
+            ref={ref}
             show={showMap}
             onCancel={toggleShowMap}
             header={place.address}
@@ -94,7 +97,7 @@ export const PlaceItem: FC<Props> = ({ place }) => {
             footer={footer}
           >
             <div className="map-container">
-              <h2>Map</h2>
+              <MapDisplay center={place.location} zoom={16} />
             </div>
           </Modal>
         )}

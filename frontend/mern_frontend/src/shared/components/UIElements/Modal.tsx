@@ -1,19 +1,11 @@
-import React, { FC, Fragment, ReactNode } from "react";
+import React, { FC, Fragment, ReactNode, Ref, useRef } from "react";
 import styled from "styled-components";
 import ReactDOM from "react-dom";
 import { CSSTransition } from "react-transition-group";
 import { Backdrop } from "./BackDrop.tsx";
+import "./Modal.css";
 
 const ModalContainer = styled.div`
-  z-index: 100;
-  position: fixed;
-  top: 22vh;
-  left: 10%;
-  width: 80%;
-  background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-  border-radius: 8px;
-
   .modal__header {
     width: 100%;
     padding: 1rem 0;
@@ -68,6 +60,7 @@ const ModalContainer = styled.div`
 
 interface ModalOverlayProps {
   className?: string;
+  ref: Ref<HTMLDivElement>;
   headerClassName?: string;
   contentClassName?: string;
   footerClassName?: string;
@@ -80,6 +73,7 @@ interface ModalOverlayProps {
 
 const ModalOverlay: FC<ModalOverlayProps> = ({
   className,
+  ref,
   headerClassName,
   contentClassName,
   footerClassName,
@@ -90,7 +84,7 @@ const ModalOverlay: FC<ModalOverlayProps> = ({
   footer,
 }) => {
   const content = (
-    <ModalContainer className={`modal ${className}`} style={style}>
+    <ModalContainer className={`modal ${className}`} style={style} ref={ref}>
       <header className={`modal__header ${headerClassName}`}>
         <h2>{header}</h2>
       </header>
@@ -124,6 +118,7 @@ export const Modal: FC<ModalProps> = ({
   style,
   className,
 }) => {
+  const nodeRef = useRef(null);
   return (
     <Fragment>
       {show && <Backdrop onClick={onCancel} />}
@@ -132,11 +127,13 @@ export const Modal: FC<ModalProps> = ({
         mountOnEnter
         unmountOnExit
         timeout={200}
+        nodeRef={nodeRef}
         classNames="modal"
       >
         <ModalOverlay
           header={header}
           style={style}
+          ref={nodeRef}
           className={className}
           contentClassName={contentClassName}
           footerClassName={footerClassName}
