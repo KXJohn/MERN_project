@@ -8,7 +8,7 @@ interface MapProps {
   center: google.maps.LatLngLiteral;
 }
 
-const API_KEY = "AIzaSyAjUhKAw3JF9UYz4cedFeMNB2RL7m1aiGU";
+const API_KEY = "#";
 
 export const MapDisplay: FC<MapProps> = ({ style, center, zoom }) => {
   return (
