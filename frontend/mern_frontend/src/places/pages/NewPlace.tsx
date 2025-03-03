@@ -1,7 +1,6 @@
 import { FC, useState } from "react";
 import { Field, Form, Formik } from "formik";
 import { NewPlaceFormValue, NewPlaceFormValueFields } from "../types.ts";
-import { FieldMetaProps } from "formik/dist/types";
 import { validateFormStringValue } from "./validate.ts";
 
 export const NewPlace: FC = () => {
@@ -28,22 +27,21 @@ export const NewPlace: FC = () => {
     <div className="place-form-container">
       <h2>Add New Place</h2>
       <Formik initialValues={formData} onSubmit={onSubmit}>
-        <Form>
-          <label htmlFor="title">Title</label>
-          <Field
-            id={NewPlaceFormValueFields.Title}
-            name={NewPlaceFormValueFields.Title}
-            value={formData.title}
-            validate={validateFormStringValue(
-              NewPlaceFormValueFields.Title,
-              formData.title,
-            )}
-          >
-            {({ meta }: { meta: FieldMetaProps<NewPlaceFormValue> }) => (
-              <div>
+        {({ errors, touched }) => (
+          <Form>
+            <label htmlFor="title">Title</label>
+            <Field
+              id={NewPlaceFormValueFields.Title}
+              name={NewPlaceFormValueFields.Title}
+              value={formData.title}
+              validate={validateFormStringValue(
+                NewPlaceFormValueFields.Title,
+                formData.title,
+              )}
+              render={() => (
                 <input
                   type="text"
-                  placeholder="Title"
+                  placeholder="firstName"
                   onChange={(e) =>
                     handleUpdateFormValue(
                       NewPlaceFormValueFields.Title,
@@ -51,14 +49,12 @@ export const NewPlace: FC = () => {
                     )
                   }
                 />
-                {meta.touched && meta.error && (
-                  <div className="error">{meta.error}</div>
-                )}
-              </div>
-            )}
-          </Field>
-          <button type="submit">Submit</button>
-        </Form>
+              )}
+            />
+            {errors.title && touched.title ? <div>{errors.title}</div> : null}
+            <button type="submit">Submit</button>
+          </Form>
+        )}
       </Formik>
     </div>
   );
