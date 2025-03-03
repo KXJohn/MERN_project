@@ -12,3 +12,21 @@ export interface Place {
   creator: string;
   location: Coordinates;
 }
+
+export interface NewPlaceFormValue {
+  title: string;
+  imageUrl: string;
+  description: string;
+  address: string;
+  lat: number;
+  lng: number;
+}
+
+export enum NewPlaceFormValueFields {
+  Title = "title",
+  Description = "description",
+  Address = "address",
+  Latitude = "lat",
+  Longitude = "lng",
+  ImageUrl = "imageUrl",
+}

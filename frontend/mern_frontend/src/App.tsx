@@ -2,7 +2,7 @@ import "./App.css";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { User } from "./users/pages/Users.tsx";
 import { Fragment } from "react";
-import { NewPlace } from "./places/pages/Places.tsx";
+import { NewPlace } from "./places/pages/NewPlace.tsx";
 import { MainNavigation } from "./shared/components/Navigation/MainNavigation.tsx";
 import { UserPlaces } from "./places/pages/UserPlaces.tsx";
 

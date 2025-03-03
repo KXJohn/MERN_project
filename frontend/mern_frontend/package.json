@@ -12,6 +12,7 @@
   "dependencies": {
     "@vis.gl/react-google-maps": "^1.5.1",
     "eslint-plugin-react": "^7.37.4",
+    "formik": "^2.4.6",
     "prettier": "^3.5.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
