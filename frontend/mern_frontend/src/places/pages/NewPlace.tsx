@@ -1,8 +1,13 @@
 import { FC } from "react";
 import { Field, Form, Formik } from "formik";
 import { NewPlaceFormValue, NewPlaceFormValueFields } from "../types.ts";
-import { isValidImageUrl, validateFormStringValue } from "./validate.ts";
+import {
+  isValidImageUrl,
+  isValidLocationNumber,
+  validateFormStringValue,
+} from "./validate.ts";
 import styled from "styled-components";
+import { stringIsNotNullOrWhiteSpace } from "../../shared/utilities.ts";
 
 const FormContainer = styled.div`
   form {
@@ -19,7 +24,8 @@ const FormContainer = styled.div`
   .place-form-title,
   .place-form-description,
   .place-form-title,
-  .place-form-imageUrl {
+  .place-form-imageUrl,
+  .place-form-address {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -47,8 +53,8 @@ const INITIAL_VALUES: NewPlaceFormValue = {
   description: "",
   imageUrl: "",
   address: "",
-  lat: 0,
-  lng: 0,
+  lat: undefined,
+  lng: undefined,
 };
 
 export const NewPlace: FC = () => {
@@ -63,8 +69,10 @@ export const NewPlace: FC = () => {
         validateOnChange
       >
         {({ errors, touched, values, handleChange }) => {
+          console.log("values", values);
+          console.log("errors", errors);
           return (
-            <Form>
+            <Form className="place-form">
               <div className="place-form-title">
                 <label htmlFor={NewPlaceFormValueFields.Title}>Title</label>
                 <Field
@@ -74,12 +82,12 @@ export const NewPlace: FC = () => {
                   validate={() =>
                     validateFormStringValue(
                       NewPlaceFormValueFields.Title,
-                      values.title,
+                      values.title ?? "",
                     )
                   }
                   onChange={handleChange}
                 />
-                {errors.title && touched.title ? (
+                {stringIsNotNullOrWhiteSpace(errors.title) && touched.title ? (
                   <div>{errors.title}</div>
                 ) : null}
               </div>
@@ -91,24 +99,39 @@ export const NewPlace: FC = () => {
                   id={NewPlaceFormValueFields.ImageUrl}
                   name={NewPlaceFormValueFields.ImageUrl}
                   value={values.imageUrl}
-                  validate={() => isValidImageUrl(values.imageUrl)}
+                  validate={() => isValidImageUrl(values.imageUrl ?? "")}
                   onChange={handleChange}
                 />
-                {errors.imageUrl && touched.imageUrl ? (
+                {stringIsNotNullOrWhiteSpace(errors.imageUrl) &&
+                touched.imageUrl ? (
                   <div>{errors.imageUrl}</div>
                 ) : null}
+              </div>
+              <div className="place-form-address">
+                <label htmlFor={NewPlaceFormValueFields.Address}>Address</label>
+                <Field
+                  id={NewPlaceFormValueFields.Address}
+                  name={NewPlaceFormValueFields.Address}
+                  value={values.address}
+                  onChange={handleChange}
+                />
               </div>
               <div className="place-form-description">
                 <label htmlFor={NewPlaceFormValueFields.Description}>
                   Description
                 </label>
                 <Field
+                  id={NewPlaceFormValueFields.Description}
+                  name={NewPlaceFormValueFields.Description}
                   value={values.description}
-                  validate={validateFormStringValue}
+                  validate={() =>
+                    validateFormStringValue(
+                      NewPlaceFormValueFields.Description,
+                      values.description ?? "",
+                    )
+                  }
                   render={() => (
                     <textarea
-                      id={NewPlaceFormValueFields.Description}
-                      name={NewPlaceFormValueFields.Description}
                       placeholder="description here"
                       maxLength={255}
                       cols={4}
@@ -116,7 +139,8 @@ export const NewPlace: FC = () => {
                     />
                   )}
                 />
-                {errors.description && touched.description ? (
+                {stringIsNotNullOrWhiteSpace(errors.description) &&
+                touched.description ? (
                   <div>{errors.description}</div>
                 ) : null}
               </div>
@@ -129,6 +153,12 @@ export const NewPlace: FC = () => {
                     id={NewPlaceFormValueFields.Latitude}
                     name={NewPlaceFormValueFields.Latitude}
                     value={values.lat}
+                    validate={() =>
+                      isValidLocationNumber(
+                        NewPlaceFormValueFields.Latitude,
+                        values.lat ?? 0,
+                      )
+                    }
                     onChange={handleChange}
                   />
                 </div>
@@ -140,6 +170,12 @@ export const NewPlace: FC = () => {
                     id={NewPlaceFormValueFields.Longitude}
                     name={NewPlaceFormValueFields.Longitude}
                     value={values.lng}
+                    validate={() =>
+                      isValidLocationNumber(
+                        NewPlaceFormValueFields.Longitude,
+                        values.lng,
+                      )
+                    }
                     onChange={handleChange}
                   />
                 </div>

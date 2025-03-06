@@ -1,5 +1,10 @@
 {
   "files": [],
+  "types": [ "node" ],
+  "baseUrl": "./src",
+  "paths": {
+    "@/*": ["./src/*"]
+  },
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }

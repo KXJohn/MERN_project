@@ -12,7 +12,25 @@ export function validateFormStringValue(
   return stringIsNullOrWhiteSpace(value) ? `Please enter a valid ${field}` : "";
 }
 
-export function isValidImageUrl(url: string): boolean {
+export function isValidImageUrl(url: string): string {
   const imageRegex = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|bmp|webp))/i;
-  return imageRegex.test(url);
+  const result = imageRegex.test(url);
+  if (!result) {
+    return "Please enter a valid imageURL";
+  }
+
+  return "";
+}
+
+export function isValidLocationNumber(
+  field: NewPlaceFormValueFields.Latitude | NewPlaceFormValueFields.Longitude,
+  value?: number,
+): string {
+  const regex =
+    /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
+  if (value != null && !regex.test(value.toString())) {
+    return `Please enter a valid ${field} number`;
+  }
+
+  return "";
 }

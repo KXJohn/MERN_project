@@ -14,12 +14,12 @@ export interface Place {
 }
 
 export interface NewPlaceFormValue {
-  title: string;
-  imageUrl: string;
-  description: string;
-  address: string;
-  lat: number;
-  lng: number;
+  title?: string;
+  imageUrl?: string;
+  description?: string;
+  address?: string;
+  lat?: number;
+  lng?: number;
 }
 
 export enum NewPlaceFormValueFields {
