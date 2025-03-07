@@ -1,10 +1,10 @@
 import { FC, Fragment, useCallback, useRef, useState } from "react";
 import { Place } from "../types.ts";
 import styled from "styled-components";
-import { Card } from "../../shared/components/UIElements/Card.tsx";
-import { Button } from "../../shared/components/FormElements/Button.tsx";
-import { Modal } from "../../shared/components/UIElements/Modal.tsx";
-import { MapDisplay } from "../../shared/components/UIElements/Map.tsx";
+import { Card } from "@/shared/components/UIElements/Card.tsx";
+import { Button } from "@/shared/components/FormElements/Button.tsx";
+import { Modal } from "@/shared/components/UIElements/Modal.tsx";
+import { MapDisplay } from "@/shared/components/UIElements/Map.tsx";
 
 const PlaceItemContainer = styled.div`
   .place-item {

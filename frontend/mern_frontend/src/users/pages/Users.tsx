@@ -1,6 +1,6 @@
 import { FC } from "react";
-import { Users } from "../components/types.ts";
-import { UsersList } from "../components/UsersList.tsx";
+import { Users } from "@/users/components/types.ts";
+import { UsersList } from "@/users/components/UsersList.tsx";
 
 export const User: FC = () => {
   const users: ReadonlyArray<Users> = [

@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { PlaceList } from "../components/PlaceList.tsx";
+import { PlaceList } from "@/places/components/PlaceList.tsx";
 import { Place } from "../types.ts";
 import { useParams } from "react-router-dom";
 

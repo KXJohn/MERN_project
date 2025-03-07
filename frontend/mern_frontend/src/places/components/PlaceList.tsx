@@ -1,7 +1,7 @@
 import { FC } from "react";
 import styled from "styled-components";
 import { Place } from "../types.ts";
-import { Card } from "../../shared/components/UIElements/Card.tsx";
+import { Card } from "@/shared/components/UIElements/Card.tsx";
 import { PlaceItem } from "./PlaceItem.tsx";
 
 const PlaceListContainer = styled.div`

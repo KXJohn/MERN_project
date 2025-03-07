@@ -1,9 +1,9 @@
 import { FC } from "react";
 import { Users } from "./types.ts";
 import { UserItemContainer } from "./style.ts";
-import { Avatar } from "../../shared/components/UIElements/Avatar.tsx";
+import { Avatar } from "@/shared/components/UIElements/Avatar.tsx";
 import { Link } from "react-router-dom";
-import { Card } from "../../shared/components/UIElements/Card.tsx";
+import { Card } from "@/shared/components/UIElements/Card.tsx";
 
 export const UserListItem: FC<Users> = ({ id, name, imageUrl, placeCount }) => {
   return (

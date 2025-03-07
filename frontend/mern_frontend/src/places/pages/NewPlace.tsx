@@ -180,7 +180,7 @@ export const NewPlace: FC = () => {
                   />
                 </div>
               </div>
-              <button type="submit">Submit</button>
+              Ï<button type="submit">Submit</button>
             </Form>
           );
         }}

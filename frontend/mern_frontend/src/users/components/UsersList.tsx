@@ -2,7 +2,7 @@ import { FC } from "react";
 import { Users } from "./types.ts";
 import { UserListItem } from "./UserListItem.tsx";
 import { UserListContainer } from "./style.ts";
-import { Card } from "../../shared/components/UIElements/Card.tsx";
+import { Card } from "@/shared/components/UIElements/Card.tsx";
 
 interface UsersListProps {
   users: ReadonlyArray<Users>;

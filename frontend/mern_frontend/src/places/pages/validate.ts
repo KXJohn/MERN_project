@@ -1,5 +1,5 @@
 import { NewPlaceFormValueFields } from "../types.ts";
-import { stringIsNullOrWhiteSpace } from "../../shared/utilities.ts";
+import { stringIsNullOrWhiteSpace } from "@/shared/utilities.ts";
 
 export function validateFormStringValue(
   field: NewPlaceFormValueFields,
