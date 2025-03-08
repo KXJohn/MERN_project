@@ -7,7 +7,8 @@ import {
   validateFormStringValue,
 } from "./validate.ts";
 import styled from "styled-components";
-import { stringIsNotNullOrWhiteSpace } from "../../shared/utilities.ts";
+import { stringIsNotNullOrWhiteSpace } from "@/shared/utilities.ts";
+import classNames from "classnames";
 
 const FormContainer = styled.div`
   form {
@@ -19,6 +20,12 @@ const FormContainer = styled.div`
     text-align: left;
     padding-top: 10px;
     width: 100%;
+  }
+
+  .hasError {
+    input {
+      border: 1px solid red;
+    }
   }
 
   .place-form-title,
@@ -36,6 +43,15 @@ const FormContainer = styled.div`
     display: flex;
     label {
       padding-right: 5px;
+    }
+
+    .latitude,
+    .longitude {
+      display: flex;
+      flex-direction: column;
+      label {
+        padding-top: 0;
+      }
     }
 
     .longitude {
@@ -58,7 +74,9 @@ const INITIAL_VALUES: NewPlaceFormValue = {
 };
 
 export const NewPlace: FC = () => {
-  const onSubmit = () => {};
+  const onSubmit = (values: NewPlaceFormValue) => {
+    console.log("values", values);
+  };
 
   return (
     <FormContainer className="place-form-container">
@@ -69,11 +87,13 @@ export const NewPlace: FC = () => {
         validateOnChange
       >
         {({ errors, touched, values, handleChange }) => {
-          console.log("values", values);
-          console.log("errors", errors);
           return (
             <Form className="place-form">
-              <div className="place-form-title">
+              <div
+                className={classNames("place-form-title", {
+                  hasError: stringIsNotNullOrWhiteSpace(errors.title),
+                })}
+              >
                 <label htmlFor={NewPlaceFormValueFields.Title}>Title</label>
                 <Field
                   id={NewPlaceFormValueFields.Title}
@@ -88,10 +108,14 @@ export const NewPlace: FC = () => {
                   onChange={handleChange}
                 />
                 {stringIsNotNullOrWhiteSpace(errors.title) && touched.title ? (
-                  <div>{errors.title}</div>
+                  <div className="error-message">{errors.title}</div>
                 ) : null}
               </div>
-              <div className="place-form-imageUrl">
+              <div
+                className={classNames("place-form-imageUrl", {
+                  hasError: stringIsNotNullOrWhiteSpace(errors.imageUrl),
+                })}
+              >
                 <label htmlFor={NewPlaceFormValueFields.ImageUrl}>
                   Image URL
                 </label>
@@ -104,10 +128,14 @@ export const NewPlace: FC = () => {
                 />
                 {stringIsNotNullOrWhiteSpace(errors.imageUrl) &&
                 touched.imageUrl ? (
-                  <div>{errors.imageUrl}</div>
+                  <div className="error-message">{errors.imageUrl}</div>
                 ) : null}
               </div>
-              <div className="place-form-address">
+              <div
+                className={classNames("place-form-address", {
+                  hasError: stringIsNotNullOrWhiteSpace(errors.address),
+                })}
+              >
                 <label htmlFor={NewPlaceFormValueFields.Address}>Address</label>
                 <Field
                   id={NewPlaceFormValueFields.Address}
@@ -116,7 +144,11 @@ export const NewPlace: FC = () => {
                   onChange={handleChange}
                 />
               </div>
-              <div className="place-form-description">
+              <div
+                className={classNames("place-form-description", {
+                  hasError: stringIsNotNullOrWhiteSpace(errors.description),
+                })}
+              >
                 <label htmlFor={NewPlaceFormValueFields.Description}>
                   Description
                 </label>
@@ -132,6 +164,8 @@ export const NewPlace: FC = () => {
                   }
                   render={() => (
                     <textarea
+                      id={NewPlaceFormValueFields.Description}
+                      name={NewPlaceFormValueFields.Description}
                       placeholder="description here"
                       maxLength={255}
                       cols={4}
@@ -141,11 +175,15 @@ export const NewPlace: FC = () => {
                 />
                 {stringIsNotNullOrWhiteSpace(errors.description) &&
                 touched.description ? (
-                  <div>{errors.description}</div>
+                  <div className="error-message">{errors.description}</div>
                 ) : null}
               </div>
               <div className="place-form-location">
-                <div className="latitude">
+                <div
+                  className={classNames("latitude", {
+                    hasError: stringIsNotNullOrWhiteSpace(errors.lat),
+                  })}
+                >
                   <label htmlFor={NewPlaceFormValueFields.Latitude}>
                     Latitude
                   </label>
@@ -161,8 +199,15 @@ export const NewPlace: FC = () => {
                     }
                     onChange={handleChange}
                   />
+                  {stringIsNotNullOrWhiteSpace(errors.lat) && touched.lat ? (
+                    <div className="error-message">{errors.lat}</div>
+                  ) : null}
                 </div>
-                <div className="longitude">
+                <div
+                  className={classNames("longitude", {
+                    hasError: stringIsNotNullOrWhiteSpace(errors.lng),
+                  })}
+                >
                   <label htmlFor={NewPlaceFormValueFields.Longitude}>
                     Longitude
                   </label>
@@ -178,9 +223,12 @@ export const NewPlace: FC = () => {
                     }
                     onChange={handleChange}
                   />
+                  {stringIsNotNullOrWhiteSpace(errors.lng) && touched.lng ? (
+                    <div className="error-message">{errors.lng}</div>
+                  ) : null}
                 </div>
               </div>
-              Ï<button type="submit">Submit</button>
+              <button type="submit">Submit</button>
             </Form>
           );
         }}

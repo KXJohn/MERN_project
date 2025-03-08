@@ -7,9 +7,11 @@ export function validateFormStringValue(
 ): string {
   if (field === NewPlaceFormValueFields.Description && value.length > 255) {
     return "Description is too long, which should be less than 255 characters";
+  } else if (stringIsNullOrWhiteSpace(value)) {
+    return `Please enter a valid ${field}`;
   }
 
-  return stringIsNullOrWhiteSpace(value) ? `Please enter a valid ${field}` : "";
+  return "";
 }
 
 export function isValidImageUrl(url: string): string {
@@ -17,18 +19,26 @@ export function isValidImageUrl(url: string): string {
   const result = imageRegex.test(url);
   if (!result) {
     return "Please enter a valid imageURL";
+  } else {
+    return "";
   }
-
-  return "";
 }
 
 export function isValidLocationNumber(
   field: NewPlaceFormValueFields.Latitude | NewPlaceFormValueFields.Longitude,
   value?: number,
 ): string {
-  const regex =
-    /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
-  if (value != null && !regex.test(value.toString())) {
+  const latLonRegex = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/;
+  const lonRegex = /^[-+]?((1[0-7]\d|\d{1,2})(\.\d+)?|180(\.0+)?)$/;
+
+  if (
+    (field === NewPlaceFormValueFields.Latitude &&
+      value != null &&
+      !latLonRegex.test(value.toString())) ||
+    (field === NewPlaceFormValueFields.Longitude &&
+      value != null &&
+      !lonRegex.test(value.toString()))
+  ) {
     return `Please enter a valid ${field} number`;
   }
 
