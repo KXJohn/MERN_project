@@ -9,23 +9,28 @@ import {
 import styled from "styled-components";
 import { stringIsNotNullOrWhiteSpace } from "@/shared/utilities.ts";
 import classNames from "classnames";
+import { Button } from "@/shared/components/FormElements/Button.tsx";
 
 const FormContainer = styled.div`
   form {
     display: flex;
     flex-direction: column;
+    list-style: none;
+    margin: 0 auto;
+    padding: 1rem;
+    width: 90%;
+    max-width: 40rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+    border-radius: 6px;
+    background: white;
   }
 
   label {
     text-align: left;
     padding-top: 10px;
     width: 100%;
-  }
-
-  .hasError {
-    input {
-      border: 1px solid red;
-    }
+    font-weight: bold;
+    margin-bottom: 0.5rem;
   }
 
   .place-form-title,
@@ -36,6 +41,30 @@ const FormContainer = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
+
+    input,
+    textarea {
+      width: 100%;
+      font: inherit;
+      border: 1px solid #ccc;
+      background: #f8f8f8;
+      padding: 0.15rem 0.25rem;
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: none;
+      background: #ebebeb;
+      border-color: #510077;
+    }
+
+    &.hasError {
+      input,
+      textarea {
+        border-color: red;
+        background: #ffd1d1;
+      }
+    }
   }
 
   .place-form-location {
@@ -62,6 +91,10 @@ const FormContainer = styled.div`
   textarea {
     resize: none;
   }
+
+  button {
+    margin-right: 0;
+  }
 `;
 
 const INITIAL_VALUES: NewPlaceFormValue = {
@@ -86,7 +119,7 @@ export const NewPlace: FC = () => {
         onSubmit={onSubmit}
         validateOnChange
       >
-        {({ errors, touched, values, handleChange }) => {
+        {({ errors, touched, values, handleChange, handleSubmit }) => {
           return (
             <Form className="place-form">
               <div
@@ -169,6 +202,7 @@ export const NewPlace: FC = () => {
                       placeholder="description here"
                       maxLength={255}
                       cols={4}
+                      rows={3}
                       onChange={handleChange}
                     />
                   )}
@@ -228,7 +262,9 @@ export const NewPlace: FC = () => {
                   ) : null}
                 </div>
               </div>
-              <button type="submit">Submit</button>
+              <Button type="submit" onClick={handleSubmit}>
+                Submit
+              </Button>
             </Form>
           );
         }}
