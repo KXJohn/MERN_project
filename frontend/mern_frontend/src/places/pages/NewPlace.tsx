@@ -262,7 +262,11 @@ export const NewPlace: FC = () => {
                   ) : null}
                 </div>
               </div>
-              <Button type="submit" onClick={handleSubmit}>
+              <Button
+                type="submit"
+                disabled={Object.keys(errors).length > 0}
+                onClick={handleSubmit}
+              >
                 Submit
               </Button>
             </Form>
