@@ -1,101 +1,15 @@
-import { FC } from "react";
+import { FC, useMemo } from "react";
 import { Field, Form, Formik } from "formik";
-import { NewPlaceFormValue, NewPlaceFormValueFields } from "../types.ts";
+import { NewPlaceFormValue, NewPlaceFormValueFields, Place } from "../types.ts";
 import {
   isValidImageUrl,
   isValidLocationNumber,
   validateFormStringValue,
 } from "./validate.ts";
-import styled from "styled-components";
 import { stringIsNotNullOrWhiteSpace } from "@/shared/utilities.ts";
 import classNames from "classnames";
 import { Button } from "@/shared/components/FormElements/Button.tsx";
-
-const FormContainer = styled.div`
-  form {
-    display: flex;
-    flex-direction: column;
-    list-style: none;
-    margin: 0 auto;
-    padding: 1rem;
-    width: 90%;
-    max-width: 40rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-    border-radius: 6px;
-    background: white;
-  }
-
-  label {
-    text-align: left;
-    padding-top: 10px;
-    width: 100%;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-  }
-
-  .place-form-title,
-  .place-form-description,
-  .place-form-title,
-  .place-form-imageUrl,
-  .place-form-address {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-
-    input,
-    textarea {
-      width: 100%;
-      font: inherit;
-      border: 1px solid #ccc;
-      background: #f8f8f8;
-      padding: 0.15rem 0.25rem;
-    }
-
-    input:focus,
-    textarea:focus {
-      outline: none;
-      background: #ebebeb;
-      border-color: #510077;
-    }
-
-    &.hasError {
-      input,
-      textarea {
-        border-color: red;
-        background: #ffd1d1;
-      }
-    }
-  }
-
-  .place-form-location {
-    padding: 10px 0;
-    display: flex;
-    label {
-      padding-right: 5px;
-    }
-
-    .latitude,
-    .longitude {
-      display: flex;
-      flex-direction: column;
-      label {
-        padding-top: 0;
-      }
-    }
-
-    .longitude {
-      padding-left: 10px;
-    }
-  }
-
-  textarea {
-    resize: none;
-  }
-
-  button {
-    margin-right: 0;
-  }
-`;
+import { FormContainer } from "@/places/pages/styles.ts";
 
 const INITIAL_VALUES: NewPlaceFormValue = {
   title: "",
@@ -106,16 +20,32 @@ const INITIAL_VALUES: NewPlaceFormValue = {
   lng: undefined,
 };
 
-export const NewPlace: FC = () => {
+interface Props {
+  place?: Place;
+}
+
+export const NewPlace: FC<Props> = ({ place }) => {
   const onSubmit = (values: NewPlaceFormValue) => {
     console.log("values", values);
   };
+
+  const placeFormValue: NewPlaceFormValue = useMemo(
+    () => ({
+      title: place?.title,
+      description: place?.description,
+      imageUrl: place?.imageUrl,
+      address: place?.address,
+      lat: place?.location.lat,
+      lng: place?.location.lng,
+    }),
+    [],
+  );
 
   return (
     <FormContainer className="place-form-container">
       <h2>Add New Place</h2>
       <Formik
-        initialValues={INITIAL_VALUES}
+        initialValues={placeFormValue ?? INITIAL_VALUES}
         onSubmit={onSubmit}
         validateOnChange
       >
@@ -199,6 +129,7 @@ export const NewPlace: FC = () => {
                     <textarea
                       id={NewPlaceFormValueFields.Description}
                       name={NewPlaceFormValueFields.Description}
+                      value={values.description}
                       placeholder="description here"
                       maxLength={255}
                       cols={4}
