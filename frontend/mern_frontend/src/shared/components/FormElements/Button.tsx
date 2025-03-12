@@ -10,7 +10,7 @@ interface ButtonProps {
   inverse?: boolean;
   danger?: boolean;
   type?: "submit" | "reset" | "button";
-  onClick: () => void;
+  onClick?: () => void;
   disabled?: boolean;
   size?: "small" | "medium" | "large";
 }

@@ -1,10 +1,12 @@
-import { FC, Fragment, useCallback, useRef, useState } from "react";
+import { FC, Fragment, useCallback, useRef } from "react";
 import { Place } from "../types.ts";
 import styled from "styled-components";
 import { Card } from "@/shared/components/UIElements/Card.tsx";
 import { Button } from "@/shared/components/FormElements/Button.tsx";
 import { Modal } from "@/shared/components/UIElements/Modal.tsx";
 import { MapDisplay } from "@/shared/components/UIElements/Map.tsx";
+import { ModalButtonRow } from "@/shared/components/UIElements/ModalButtonRow.tsx";
+import { useToggle } from "@/shared/hooks/useToggle.ts";
 
 const PlaceItemContainer = styled.div`
   .place-item {
@@ -74,14 +76,15 @@ interface Props {
 }
 
 export const PlaceItem: FC<Props> = ({ place }) => {
-  const [showMap, setShowMap] = useState(false);
-
-  const toggleShowMap = useCallback(() => {
-    setShowMap(!showMap);
-  }, [showMap]);
+  const [showMap, toggleShowMap] = useToggle(false);
+  const [showConfirmModal, toggleShowConfirmModal] = useToggle(false);
 
   const ref = useRef(null);
   const footer = <Button onClick={toggleShowMap}>Close</Button>;
+
+  const confirmDeleteHandler = useCallback(() => {
+    console.log("Deleting....");
+  }, []);
 
   return (
     <PlaceItemContainer>
@@ -101,7 +104,22 @@ export const PlaceItem: FC<Props> = ({ place }) => {
             </div>
           </Modal>
         )}
-
+        {showConfirmModal && (
+          <Modal
+            show={showConfirmModal}
+            onCancel={toggleShowConfirmModal}
+            ref={ref}
+            header="Are you sure?"
+          >
+            <p>Do you want to proceed and delete this place?</p>
+            <ModalButtonRow
+              firstButtonText="Cancel"
+              secondButtonText="Delete"
+              onClickFirstButton={toggleShowConfirmModal}
+              onClickSecondButton={confirmDeleteHandler}
+            />
+          </Modal>
+        )}
         <li className="place-item">
           <Card className="place-item__content">
             <div className="place-item__image">
@@ -112,17 +130,14 @@ export const PlaceItem: FC<Props> = ({ place }) => {
               <h3>{place.address}</h3>
               <p>{place.address}</p>
             </div>
-            <div className="place-item__modal-actions">
-              <Button inverse onClick={toggleShowMap}>
-                View on Map
-              </Button>
-              <Button to={`/places/${place.id}`} onClick={() => {}}>
-                Edit
-              </Button>
-              <Button danger onClick={() => {}}>
-                Delete
-              </Button>
-            </div>
+            <ModalButtonRow
+              firstButtonText="View on Map"
+              secondButtonText="Delete"
+              onClickFirstButton={toggleShowMap}
+              onClickSecondButton={toggleShowConfirmModal}
+            >
+              <Button to={`/places/${place.id}`}>Edit</Button>
+            </ModalButtonRow>
           </Card>
         </li>
       </Fragment>

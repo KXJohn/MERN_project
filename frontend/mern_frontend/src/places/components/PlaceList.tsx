@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Place } from "../types.ts";
 import { Card } from "@/shared/components/UIElements/Card.tsx";
 import { PlaceItem } from "./PlaceItem.tsx";
+import { Button } from "@/shared/components/FormElements/Button.tsx";
 
 const PlaceListContainer = styled.div`
   list-style: none;
@@ -22,6 +23,9 @@ export const PlaceList: FC<Props> = ({ places }) => {
       <PlaceListContainer className="place-list center">
         <Card>
           <h2>No Places found. Maybe create one</h2>
+          <Button to="/places/new" onClick={() => {}}>
+            Share Place
+          </Button>
         </Card>
       </PlaceListContainer>
     );
