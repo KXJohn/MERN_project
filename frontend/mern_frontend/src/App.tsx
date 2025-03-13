@@ -6,6 +6,7 @@ import { NewPlace } from "./places/pages/NewPlace.tsx";
 import { MainNavigation } from "./shared/components/Navigation/MainNavigation.tsx";
 import { UserPlaces } from "./places/pages/UserPlaces.tsx";
 import { UpdatePlace } from "@/places/pages/UpdatePlace.tsx";
+import { AuthPage } from "@/places/pages/AuthPage.tsx";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/:userId/places" element={<UserPlaces />}></Route>
           <Route path="/places/new" element={<NewPlace />} />
           <Route path="/places/:placeId" element={<UpdatePlace />} />
+          <Route path="/auth" element={<AuthPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

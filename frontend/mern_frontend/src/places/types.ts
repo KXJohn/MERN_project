@@ -30,3 +30,13 @@ export enum NewPlaceFormValueFields {
   Longitude = "lng",
   ImageUrl = "imageUrl",
 }
+
+export interface LogInFormValue {
+  email: string;
+  password: string;
+}
+
+export enum LogInFormValueFields {
+  Email = "email",
+  Password = "password",
+}

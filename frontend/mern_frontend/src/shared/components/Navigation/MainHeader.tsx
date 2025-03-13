@@ -68,6 +68,7 @@ const HeaderContainer = styled.header`
 
     .main-navigation__header-nav {
       display: block;
+      margin-right: 20px;
     }
   }
 `;
