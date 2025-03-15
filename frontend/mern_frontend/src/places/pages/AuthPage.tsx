@@ -2,16 +2,18 @@ import { FC } from "react";
 import { LogInFormValue, LogInFormValueFields } from "@/places/types.ts";
 import { FormContainer } from "@/places/pages/styles.ts";
 import * as Yup from "yup";
-import { ObjectSchema } from "yup";
 import { Field, Form, Formik } from "formik";
 import classNames from "classnames";
 import { stringIsNotNullOrWhiteSpace } from "@/shared/utilities.ts";
 import { Button } from "@/shared/components/FormElements/Button.tsx";
 import styled from "styled-components";
+import { Card } from "@/shared/components/UIElements/Card.tsx";
+import { useToggle } from "@/shared/hooks/useToggle.ts";
 
 const AuthContainer = styled(FormContainer)`
   form {
     align-items: end;
+    margin-bottom: 20px;
 
     label {
       padding-right: 20px;
@@ -32,7 +34,8 @@ const INITIAL_VALUES: LogInFormValue = {
   password: "",
 };
 
-const schema: ObjectSchema<LogInFormValue> = Yup.object().shape({
+const schema = Yup.object().shape({
+  name: Yup.string().notRequired(),
   email: Yup.string()
     .required("Email is a required field")
     .email("Invalid email format"),
@@ -42,65 +45,99 @@ const schema: ObjectSchema<LogInFormValue> = Yup.object().shape({
 });
 
 export const AuthPage: FC = () => {
+  const [showSignUp, toggleToShowSignUp] = useToggle(false);
+
+  const formText = `${showSignUp ? "Sign Up" : "Log In"}`;
+
   const onSubmit = () => {};
   return (
-    <AuthContainer className="place-form-container">
-      <h2>Log In</h2>
-      <Formik
-        initialValues={INITIAL_VALUES}
-        validationSchema={schema}
-        onSubmit={onSubmit}
-        validateOnChange
-      >
-        {({ errors, values, touched, handleChange, handleSubmit }) => {
-          return (
-            <Form className="login-form">
-              <div
-                className={classNames("login-form-email", {
-                  hasError: stringIsNotNullOrWhiteSpace(errors.email),
-                })}
-              >
-                <label htmlFor={LogInFormValueFields.Email}>Email</label>
-                <Field
-                  id={LogInFormValueFields.Email}
-                  name={LogInFormValueFields.Email}
-                  value={values.email}
-                  onChange={handleChange}
-                  type="email"
-                />
-                {stringIsNotNullOrWhiteSpace(errors.email) && touched.email ? (
-                  <div className="error-message">{errors.email}</div>
-                ) : null}
-              </div>
-              <div
-                className={classNames("login-form-password", {
-                  hasError: stringIsNotNullOrWhiteSpace(errors.password),
-                })}
-              >
-                <label htmlFor={LogInFormValueFields.Password}>Password</label>
-                <Field
-                  id={LogInFormValueFields.Password}
-                  name={LogInFormValueFields.Password}
-                  value={values.password}
-                  onChange={handleChange}
-                  type="password"
-                />
-                {stringIsNotNullOrWhiteSpace(errors.password) &&
-                touched.password ? (
-                  <div className="error-message">{errors.password}</div>
-                ) : null}
-              </div>
-              <Button
-                type="submit"
-                disabled={Object.keys(errors).length > 0}
-                onClick={handleSubmit}
-              >
-                Sign In
-              </Button>
-            </Form>
-          );
-        }}
-      </Formik>
-    </AuthContainer>
+    <Card>
+      <AuthContainer className="place-form-container">
+        <h2>{formText}</h2>
+        <Formik
+          initialValues={INITIAL_VALUES}
+          validationSchema={schema}
+          onSubmit={onSubmit}
+          validateOnChange
+        >
+          {({ errors, values, touched, handleChange, handleSubmit }) => {
+            return (
+              <Form className="login-form">
+                {showSignUp && (
+                  <div
+                    className={classNames("login-form-name", {
+                      hasError:
+                        stringIsNotNullOrWhiteSpace(errors.name) && showSignUp,
+                    })}
+                  >
+                    <label htmlFor={LogInFormValueFields.Name}>Your Name</label>
+                    <Field
+                      id={LogInFormValueFields.Name}
+                      name={LogInFormValueFields.Name}
+                      value={values.name}
+                      onChange={handleChange}
+                      type="text"
+                    />
+                    {stringIsNotNullOrWhiteSpace(errors.name) &&
+                    touched.name &&
+                    showSignUp ? (
+                      <div className="error-message">{errors.name}</div>
+                    ) : null}
+                  </div>
+                )}
+                <div
+                  className={classNames("login-form-email", {
+                    hasError: stringIsNotNullOrWhiteSpace(errors.email),
+                  })}
+                >
+                  <label htmlFor={LogInFormValueFields.Email}>Email</label>
+                  <Field
+                    id={LogInFormValueFields.Email}
+                    name={LogInFormValueFields.Email}
+                    value={values.email}
+                    onChange={handleChange}
+                    type="email"
+                  />
+                  {stringIsNotNullOrWhiteSpace(errors.email) &&
+                  touched.email ? (
+                    <div className="error-message">{errors.email}</div>
+                  ) : null}
+                </div>
+                <div
+                  className={classNames("login-form-password", {
+                    hasError: stringIsNotNullOrWhiteSpace(errors.password),
+                  })}
+                >
+                  <label htmlFor={LogInFormValueFields.Password}>
+                    Password
+                  </label>
+                  <Field
+                    id={LogInFormValueFields.Password}
+                    name={LogInFormValueFields.Password}
+                    value={values.password}
+                    onChange={handleChange}
+                    type="password"
+                  />
+                  {stringIsNotNullOrWhiteSpace(errors.password) &&
+                  touched.password ? (
+                    <div className="error-message">{errors.password}</div>
+                  ) : null}
+                </div>
+                <Button
+                  type="submit"
+                  disabled={Object.keys(errors).length > 0}
+                  onClick={handleSubmit}
+                >
+                  {formText}
+                </Button>
+              </Form>
+            );
+          }}
+        </Formik>
+        <Button type="submit" onClick={toggleToShowSignUp}>
+          {`Switch To ${showSignUp ? "LogIn" : "Sign Up"}`}
+        </Button>
+      </AuthContainer>
+    </Card>
   );
 };

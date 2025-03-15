@@ -32,11 +32,13 @@ export enum NewPlaceFormValueFields {
 }
 
 export interface LogInFormValue {
+  name?: string;
   email: string;
   password: string;
 }
 
 export enum LogInFormValueFields {
+  Name = "name",
   Email = "email",
   Password = "password",
 }
