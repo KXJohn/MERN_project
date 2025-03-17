@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { LogInFormValue, LogInFormValueFields } from "@/places/types.ts";
 import { FormContainer } from "@/places/pages/styles.ts";
 import * as Yup from "yup";
@@ -9,6 +9,9 @@ import { Button } from "@/shared/components/FormElements/Button.tsx";
 import styled from "styled-components";
 import { Card } from "@/shared/components/UIElements/Card.tsx";
 import { useToggle } from "@/shared/hooks/useToggle.ts";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store.ts";
+import { Spinner } from "@/shared/components/UIElements/Spinner.tsx";
 
 const AuthContainer = styled(FormContainer)`
   form {
@@ -45,11 +48,29 @@ const schema = Yup.object().shape({
 });
 
 export const AuthPage: FC = () => {
+  const {
+    loading: registerLoading,
+    // error: registerError,
+    success: registerSuccess,
+  } = useSelector((state: RootState) => state.auth);
+
+  // const dispatch = useDispatch();
+  //
+  // const navigate = useNavigate();
+
   const [showSignUp, toggleToShowSignUp] = useToggle(false);
 
   const formText = `${showSignUp ? "Sign Up" : "Log In"}`;
 
   const onSubmit = () => {};
+
+  useEffect(() => {
+    if (registerSuccess) {
+      // if register success, switch register screen to login screen
+      toggleToShowSignUp();
+    }
+  }, [registerSuccess, toggleToShowSignUp]);
+
   return (
     <Card>
       <AuthContainer className="place-form-container">
@@ -125,15 +146,16 @@ export const AuthPage: FC = () => {
                 </div>
                 <Button
                   type="submit"
-                  disabled={Object.keys(errors).length > 0}
+                  disabled={Object.keys(errors).length > 0 || registerLoading}
                   onClick={handleSubmit}
                 >
-                  {formText}
+                  {registerLoading ? <Spinner /> : formText}
                 </Button>
               </Form>
             );
           }}
         </Formik>
+
         <Button type="submit" onClick={toggleToShowSignUp}>
           {`Switch To ${showSignUp ? "LogIn" : "Sign Up"}`}
         </Button>

@@ -21,7 +21,33 @@ export const registerUser = createAsyncThunk(
         config,
       );
     } catch (error: unknown) {
-      return rejectWithValue(error);
+      return rejectWithValue(error as Error);
+    }
+  },
+);
+
+export const userLogin = createAsyncThunk(
+  "auth/login",
+  async (logInInfo: LogInFormValue, { rejectWithValue }) => {
+    const { email, password } = logInInfo;
+    try {
+      // configure header's Content-Type as JSON
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const { data } = await axios.post(
+        `${backEndURL}/api/user/login`,
+        { email, password },
+        config,
+      );
+      // store user's token in local storage
+      localStorage.setItem("userToken", data.userToken);
+      return data;
+    } catch (error: unknown) {
+      // return custom error message from API if any
+      return rejectWithValue(error as Error);
     }
   },
 );
