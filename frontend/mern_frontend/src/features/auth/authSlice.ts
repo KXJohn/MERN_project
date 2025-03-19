@@ -1,10 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { registerUser, userLogin } from "@/features/auth/authActions.ts";
+import {
+  registerUser,
+  UserData,
+  userLogin,
+} from "@/features/auth/authActions.ts";
 
-const initialState = {
+const userToken = localStorage.getItem("userToken")
+  ? localStorage.getItem("userToken")
+  : null;
+
+interface AuthState {
+  userToken: string;
+  loading: boolean;
+  error: string;
+  success: boolean;
+  userInfo: UserData;
+}
+
+const initialState: AuthState = {
   loading: false,
-  userInfo: {},
-  userToken: null,
+  userInfo: { id: "", token: "", name: "", email: "" },
+  userToken: userToken ?? "",
   error: "",
   success: false,
 };
@@ -30,9 +46,11 @@ const authSlice = createSlice({
       state.loading = true;
       state.error = "";
     });
-    builder.addCase(userLogin.fulfilled, (state) => {
+    builder.addCase(userLogin.fulfilled, (state, { payload }) => {
       state.loading = false;
       state.success = true;
+      state.userInfo = payload;
+      state.userToken = payload.token;
     });
     builder.addCase(userLogin.rejected, (state, action) => {
       state.loading = false;

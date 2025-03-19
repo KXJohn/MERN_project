@@ -10,8 +10,11 @@ import styled from "styled-components";
 import { Card } from "@/shared/components/UIElements/Card.tsx";
 import { useToggle } from "@/shared/hooks/useToggle.ts";
 import { useSelector } from "react-redux";
+import { useAppDispatch } from "@/store.ts";
 import { RootState } from "@/store.ts";
 import { Spinner } from "@/shared/components/UIElements/Spinner.tsx";
+import { userLogin } from "@/features/auth/authActions.ts";
+import { useNavigate } from "react-router-dom";
 
 const AuthContainer = styled(FormContainer)`
   form {
@@ -49,27 +52,40 @@ const schema = Yup.object().shape({
 
 export const AuthPage: FC = () => {
   const {
-    loading: registerLoading,
+    loading,
     // error: registerError,
-    success: registerSuccess,
+    userInfo,
+    success,
   } = useSelector((state: RootState) => state.auth);
 
-  // const dispatch = useDispatch();
-  //
-  // const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const navigate = useNavigate();
 
   const [showSignUp, toggleToShowSignUp] = useToggle(false);
 
   const formText = `${showSignUp ? "Sign Up" : "Log In"}`;
 
-  const onSubmit = () => {};
+  const onSubmit = (values: LogInFormValue) => {
+    const value: LogInFormValue = {
+      password: values.password,
+      email: values.email,
+    };
+    dispatch(userLogin(value));
+  };
 
   useEffect(() => {
-    if (registerSuccess) {
+    if (success && showSignUp) {
       // if register success, switch register screen to login screen
       toggleToShowSignUp();
     }
-  }, [registerSuccess, toggleToShowSignUp]);
+  }, [showSignUp, success, toggleToShowSignUp]);
+
+  useEffect(() => {
+    if (Object.keys(userInfo).length > 0) {
+      navigate(`/${userInfo.id}`);
+    }
+  }, [navigate, userInfo]);
 
   return (
     <Card>
@@ -146,10 +162,10 @@ export const AuthPage: FC = () => {
                 </div>
                 <Button
                   type="submit"
-                  disabled={Object.keys(errors).length > 0 || registerLoading}
+                  disabled={Object.keys(errors).length > 0 || loading}
                   onClick={handleSubmit}
                 >
-                  {registerLoading ? <Spinner /> : formText}
+                  {loading ? <Spinner /> : formText}
                 </Button>
               </Form>
             );
