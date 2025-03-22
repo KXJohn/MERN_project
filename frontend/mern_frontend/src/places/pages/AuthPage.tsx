@@ -171,7 +171,6 @@ export const AuthPage: FC = () => {
             );
           }}
         </Formik>
-
         <Button type="submit" onClick={toggleToShowSignUp}>
           {`Switch To ${showSignUp ? "LogIn" : "Sign Up"}`}
         </Button>
