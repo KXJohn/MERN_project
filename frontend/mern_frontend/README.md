@@ -24,17 +24,17 @@ Fast development with Vite
 
 Start development server:
 
-yarn start
+```yarn start```
 
 Build production assets:
 
-yarn build
+```yarn build```
 
 Run ESLint:
 
-yarn lint
+```yarn lint```
 
 Preview production build:
 
-yarn preview
+```yarn preview```
 
