@@ -1,0 +1,14 @@
+{
+  "name": "MERN_project",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/KXJohn/MERN_project.git",
+  "author": "KaixiangJony <kaixiangjohn@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "prettier": "^3.5.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.11"
+  }
+}

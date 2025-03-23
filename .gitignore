@@ -1,2 +1,3 @@
 /.idea
 frontend/mern_frontend/src/shared/key.ts
+/backend/node_modules
