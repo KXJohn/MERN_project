@@ -6,13 +6,10 @@ import { authApi } from "@/features/auth/authService.ts";
 const store = configureStore({
   reducer: {
     auth: authReducer,
+    [authApi.reducerPath]: authApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      thunk: {
-        extraArgument: authApi,
-      },
-    }),
+    getDefaultMiddleware().concat(authApi.middleware),
 });
 
 export type AppDispatch = typeof store.dispatch;

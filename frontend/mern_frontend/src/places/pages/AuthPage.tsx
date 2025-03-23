@@ -82,7 +82,7 @@ export const AuthPage: FC = () => {
   }, [showSignUp, success, toggleToShowSignUp]);
 
   useEffect(() => {
-    if (Object.keys(userInfo).length > 0) {
+    if (userInfo.token.length > 0) {
       navigate(`/${userInfo.id}`);
     }
   }, [navigate, userInfo]);

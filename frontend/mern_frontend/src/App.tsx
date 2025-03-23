@@ -7,6 +7,7 @@ import { MainNavigation } from "./shared/components/Navigation/MainNavigation.ts
 import { UserPlaces } from "./places/pages/UserPlaces.tsx";
 import { UpdatePlace } from "@/places/pages/UpdatePlace.tsx";
 import { AuthPage } from "@/places/pages/AuthPage.tsx";
+import { ProtectedRoute } from "@/route/ProtectedRoute.tsx";
 
 function App() {
   return (
@@ -20,6 +21,9 @@ function App() {
           <Route path="/places/:placeId" element={<UpdatePlace />} />
           <Route path="/auth" element={<AuthPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<User />} />
+          </Route>
         </Routes>
       </main>
     </Fragment>

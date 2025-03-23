@@ -28,7 +28,19 @@ const initialState: AuthState = {
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    logoutUser: (state: AuthState) => {
+      localStorage.removeItem("userToken");
+      state.error = "";
+      state.loading = false;
+      state.userToken = initialState.userToken;
+      state.userInfo = initialState.userInfo;
+    },
+
+    setCredentials: (state: AuthState, { payload }) => {
+      state.userInfo = payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(registerUser.pending, (state) => {
       state.loading = true;
@@ -59,4 +71,5 @@ const authSlice = createSlice({
   },
 });
 
+export const { logoutUser, setCredentials } = authSlice.actions;
 export default authSlice.reducer;
