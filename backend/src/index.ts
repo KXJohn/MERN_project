@@ -1,7 +1,14 @@
-import express, { Express, Request, Response } from "express";
+import express, {
+  Express,
+  Request,
+  Response,
+  NextFunction,
+  ErrorRequestHandler,
+} from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import placeRoutes from "./routes/place-route";
+import { errorHandler } from "./middleware/errors";
 
 dotenv.config();
 
@@ -10,11 +17,13 @@ const port = process.env.PORT || 3000;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(placeRoutes);
+app.use("/api/places", placeRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
 });
+
+app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
