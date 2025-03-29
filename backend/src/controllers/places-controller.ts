@@ -1,6 +1,4 @@
-import express, { Express, Request, Response } from "express";
-
-const router = express.Router();
+import { NextFunction, Request, Response } from "express";
 
 const DUMMY_PLACES = [
   {
@@ -18,7 +16,11 @@ const DUMMY_PLACES = [
   },
 ];
 
-router.get("/:pid", (req, res, next) => {
+export const getPlaceById = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const placeId = req.params.pid;
   const placeToReturn = DUMMY_PLACES.find((place) => place.id === placeId);
 
@@ -27,9 +29,13 @@ router.get("/:pid", (req, res, next) => {
   } else {
     res.json({ place: placeToReturn });
   }
-});
+};
 
-router.get("/user/:id", (req, res, next) => {
+export const getPlaceByUserId = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const userId = req.params.id;
   console.log("userId", userId);
   const place = DUMMY_PLACES.find((place) => place.creator === userId);
@@ -39,6 +45,4 @@ router.get("/user/:id", (req, res, next) => {
   } else {
     res.json({ place });
   }
-});
-
-export default router;
+};

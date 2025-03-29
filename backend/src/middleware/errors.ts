@@ -6,7 +6,6 @@ export const errorHandler: ErrorRequestHandler = (
   res: Response,
   next: NextFunction,
 ) => {
-  console.error(error);
   res
     .status(500)
     .send({ error: [{ message: `${error}, Something went wrong` }] });

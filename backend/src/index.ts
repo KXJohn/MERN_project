@@ -7,7 +7,7 @@ import express, {
 } from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
-import placeRoutes from "./routes/place-route";
+import placeRoutes from "./routes/place-routes";
 import { errorHandler } from "./middleware/errors";
 
 dotenv.config();
