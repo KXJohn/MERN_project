@@ -23,7 +23,7 @@ router.get("/:pid", (req, res, next) => {
   const placeToReturn = DUMMY_PLACES.find((place) => place.id === placeId);
 
   if (placeToReturn == null) {
-    res.status(404).json({ message: "No Place To Return" });
+    throw new Error("No Place To Return");
   } else {
     res.json({ place: placeToReturn });
   }
@@ -31,11 +31,11 @@ router.get("/:pid", (req, res, next) => {
 
 router.get("/user/:id", (req, res, next) => {
   const userId = req.params.id;
-
+  console.log("userId", userId);
   const place = DUMMY_PLACES.find((place) => place.creator === userId);
 
   if (place == null) {
-    res.status(404).json({ message: "No Place To Return" });
+    throw new Error("No Place To Return");
   } else {
     res.json({ place });
   }

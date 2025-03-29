@@ -4,6 +4,7 @@ export const errorHandler: ErrorRequestHandler = (
   error: ErrorRequestHandler,
   req: Request,
   res: Response,
+  next: NextFunction,
 ) => {
   console.error(error);
   res
