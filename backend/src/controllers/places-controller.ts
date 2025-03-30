@@ -1,6 +1,21 @@
 import { NextFunction, Request, Response } from "express";
 
-const DUMMY_PLACES = [
+interface Location {
+  lat: number;
+  lng: number;
+}
+
+interface Place {
+  id?: string;
+  title?: string;
+  description?: string;
+  imageUrl?: string;
+  address?: string;
+  location?: Location;
+  creator?: string;
+}
+
+const DUMMY_PLACES: Array<Place> = [
   {
     id: "p1",
     title: "Empire State Building",
@@ -45,4 +60,25 @@ export const getPlaceByUserId = (
   } else {
     res.json({ place });
   }
+};
+
+export const createPlace = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { title, description, location, address, creator, imageUrl } = req.body;
+
+  const newPlace: Place = {
+    title,
+    address,
+    description,
+    creator,
+    location,
+    imageUrl,
+  };
+
+  DUMMY_PLACES.push(newPlace);
+
+  res.status(201).json({ place: newPlace });
 };
