@@ -16,7 +16,7 @@ interface Place {
   creator?: string;
 }
 
-const DUMMY_PLACES: Array<Place> = [
+let DUMMY_PLACES: Array<Place> = [
   {
     id: "p1",
     title: "Empire State Building",
@@ -54,12 +54,12 @@ export const getPlaceByUserId = (
 ) => {
   const userId = req.params.id;
   console.log("userId", userId);
-  const place = DUMMY_PLACES.find((place) => place.creator === userId);
+  const places = DUMMY_PLACES.filter((place) => place.creator === userId);
 
-  if (place == null) {
+  if (places == null || places.length === 0) {
     throw new Error("No Place To Return");
   } else {
-    res.json({ place });
+    res.json({ places });
   }
 };
 
@@ -83,4 +83,35 @@ export const createPlace = (
   DUMMY_PLACES.push(newPlace);
 
   res.status(201).json({ place: newPlace });
+};
+
+export const updatePlace = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { title, description } = req.body;
+
+  const { pid } = req.params;
+  const updatedPlace = { ...DUMMY_PLACES.find((place) => place.id === pid) };
+  const placeIndex = DUMMY_PLACES.findIndex(
+    (place) => place.id === updatedPlace.id,
+  );
+  updatedPlace.description = description;
+  updatedPlace.title = title;
+
+  DUMMY_PLACES[placeIndex] = updatedPlace;
+
+  res.status(200).json({ place: updatedPlace });
+};
+
+export const deletePlaceById = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { pid } = req.params;
+  DUMMY_PLACES = DUMMY_PLACES.filter((d) => d.id !== pid);
+
+  res.status(200).json({ message: "Deleted Place" });
 };
