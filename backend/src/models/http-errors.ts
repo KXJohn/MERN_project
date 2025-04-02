@@ -1,5 +1,13 @@
-class HttpErrors extends Error {
-  constructor(message: string, errorCode: number) {
+class HttpError extends Error {
+  statusCode: number;
+
+  constructor(statusCode: number, message: string) {
     super(message);
+    this.statusCode = statusCode;
+    this.name = this.constructor.name;
+    Error.captureStackTrace(this, this.constructor);
   }
 }
+module.exports = {
+  HttpError,
+};

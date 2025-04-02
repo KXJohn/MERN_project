@@ -1,10 +1,4 @@
-import express, {
-  Express,
-  Request,
-  Response,
-  NextFunction,
-  ErrorRequestHandler,
-} from "express";
+import express, { Express, NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import placeRoutes from "./routes/place-routes";

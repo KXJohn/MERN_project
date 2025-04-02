@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { v4 as uuid } from "uuid";
 
 interface Location {
   lat: number;
@@ -70,6 +71,7 @@ export const createPlace = (
   const { title, description, location, address, creator, imageUrl } = req.body;
 
   const newPlace: Place = {
+    id: uuid(),
     title,
     address,
     description,
