@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { v4 as uuid } from "uuid";
+import { validationResult } from "express-validator";
+import { HttpError } from "../models/http-errors";
 
 interface Location {
   lat: number;
@@ -68,6 +70,11 @@ export const createPlace = (
   res: Response,
   next: NextFunction,
 ) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new HttpError(422, "Invalid Place");
+  }
+
   const { title, description, location, address, creator, imageUrl } = req.body;
 
   const newPlace: Place = {
