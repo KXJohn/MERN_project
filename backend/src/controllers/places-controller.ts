@@ -97,6 +97,11 @@ export const updatePlace = (
   res: Response,
   next: NextFunction,
 ) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new HttpError(422, "Invalid Input");
+  }
+
   const { title, description } = req.body;
 
   const { pid } = req.params;
@@ -118,6 +123,10 @@ export const deletePlaceById = (
   next: NextFunction,
 ) => {
   const { pid } = req.params;
+  if (!DUMMY_PLACES.find((place) => place.id === pid)) {
+    throw new HttpError(422, "Could not delete non-exist Place");
+  }
+
   DUMMY_PLACES = DUMMY_PLACES.filter((d) => d.id !== pid);
 
   res.status(200).json({ message: "Deleted Place" });

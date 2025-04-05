@@ -1,4 +1,4 @@
-import express, { Express, Request, Response } from "express";
+import express from "express";
 import { check } from "express-validator";
 import {
   createPlace,
@@ -24,7 +24,11 @@ router.post(
   createPlace,
 );
 
-router.patch("/:pid", updatePlace);
+router.patch(
+  "/:pid",
+  [check("title").not().isEmpty(), check("description").isLength({ min: 5 })],
+  updatePlace,
+);
 
 router.delete("/:pid", deletePlaceById);
 
