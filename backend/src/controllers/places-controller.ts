@@ -2,8 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import { v4 as uuid } from "uuid";
 import { validationResult } from "express-validator";
 import { HttpError } from "../models/http-errors";
+import { getCoordinatesForLocation } from "../utilities/location";
 
-interface Location {
+export interface Location {
   lat: number;
   lng: number;
 }
@@ -65,17 +66,25 @@ export const getPlaceByUserId = (
   }
 };
 
-export const createPlace = (
+export const createPlace = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    throw new HttpError(422, "Invalid Place");
+    next(new HttpError(422, "Invalid Place"));
   }
 
   const { title, description, location, address, creator, imageUrl } = req.body;
+
+  let coordinates: Location | undefined = undefined;
+
+  try {
+    coordinates = await getCoordinatesForLocation(address);
+  } catch (error) {
+    return next(error);
+  }
 
   const newPlace: Place = {
     id: uuid(),
@@ -83,7 +92,7 @@ export const createPlace = (
     address,
     description,
     creator,
-    location,
+    location: location == null ? coordinates : location,
     imageUrl,
   };
 
