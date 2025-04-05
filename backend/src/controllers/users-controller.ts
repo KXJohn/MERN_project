@@ -25,6 +25,11 @@ export const getUsers = (req: Request, res: Response, next: NextFunction) => {
 export const signup = (req: Request, res: Response, next: NextFunction) => {
   const { name, email, password } = req.body;
 
+  const hasUser = DUMMY_USERS.includes(email);
+  if (hasUser) {
+    throw new HttpError(401, "User already exists");
+  }
+
   const createdUser: User = {
     id: uuid(),
     name,
