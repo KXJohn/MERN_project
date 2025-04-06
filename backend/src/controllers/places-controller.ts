@@ -71,34 +71,38 @@ export const createPlace = async (
   res: Response,
   next: NextFunction,
 ) => {
+  const { title, description, location, address, creator, imageUrl } = req.body;
+
+  let coordinates: Location | undefined = undefined;
+  let newPlace: Place | undefined = undefined;
+
+  try {
+    coordinates = await getCoordinatesForLocation(address);
+    if (coordinates != null) {
+      newPlace = {
+        id: uuid(),
+        title,
+        address,
+        description,
+        creator,
+        location: location == null ? coordinates : location,
+        imageUrl,
+      };
+    }
+  } catch (error) {
+    return next(error);
+  }
+
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     next(new HttpError(422, "Invalid Place"));
   }
 
-  const { title, description, location, address, creator, imageUrl } = req.body;
+  if (newPlace != undefined) {
+    DUMMY_PLACES.push(newPlace);
 
-  let coordinates: Location | undefined = undefined;
-
-  try {
-    coordinates = await getCoordinatesForLocation(address);
-  } catch (error) {
-    return next(error);
+    res.status(201).json({ place: newPlace });
   }
-
-  const newPlace: Place = {
-    id: uuid(),
-    title,
-    address,
-    description,
-    creator,
-    location: location == null ? coordinates : location,
-    imageUrl,
-  };
-
-  DUMMY_PLACES.push(newPlace);
-
-  res.status(201).json({ place: newPlace });
 };
 
 export const updatePlace = (
