@@ -14,6 +14,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-validator": "^7.2.1",
+    "mongoose": "^8.13.2",
     "nod": "^0.2.0",
     "tsconfig-paths": "^4.2.0",
     "uuid": "^11.1.0"

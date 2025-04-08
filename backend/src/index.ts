@@ -4,6 +4,8 @@ import bodyParser from "body-parser";
 import placeRoutes from "./routes/place-routes";
 import { errorHandler } from "./middleware/errors";
 import usersRoutes from "./routes/users-routes";
+import mongoose from "mongoose";
+import * as process from "node:process";
 
 dotenv.config();
 
@@ -21,6 +23,13 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use(errorHandler);
 
-app.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port}`);
-});
+mongoose
+  .connect(process.env.MONGODB_URI ?? "")
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`[server]: Server is running at http://localhost:${port}`);
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+  });
