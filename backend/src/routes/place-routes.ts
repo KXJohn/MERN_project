@@ -15,7 +15,7 @@ router.get("/:pid", getPlaceById);
 router.get("/user/:id", getPlaceByUserId);
 
 router.post(
-  "/",
+  "/create",
   [
     check("title").not().isEmpty(),
     check("description").isLength({ min: 5 }),

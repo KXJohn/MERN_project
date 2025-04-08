@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { v4 as uuid } from "uuid";
 import { validationResult } from "express-validator";
 import { HttpError } from "../models/http-errors";
 import { getCoordinatesForLocation } from "../utilities/location";
+import PlaceModel from "../models/place";
 
 export interface Location {
   lat: number;
@@ -80,7 +80,6 @@ export const createPlace = async (
     coordinates = await getCoordinatesForLocation(address);
     if (coordinates != null) {
       newPlace = {
-        id: uuid(),
         title,
         address,
         description,
@@ -99,9 +98,21 @@ export const createPlace = async (
   }
 
   if (newPlace != undefined) {
-    DUMMY_PLACES.push(newPlace);
+    const createdPlace = new PlaceModel({
+      title: newPlace.title,
+      description: newPlace.description,
+      location: newPlace.location,
+      imageUrl: newPlace.imageUrl,
+      address: newPlace.address,
+      creator: newPlace.creator,
+    });
 
-    res.status(201).json({ place: newPlace });
+    try {
+      createdPlace.save();
+      res.status(201).json({ place: createdPlace });
+    } catch (error) {
+      throw new HttpError(500, "Create Place Error");
+    }
   }
 };
 
