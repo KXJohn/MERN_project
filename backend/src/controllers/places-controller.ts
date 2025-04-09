@@ -61,19 +61,29 @@ export const getPlaceById = async (
   }
 };
 
-export const getPlaceByUserId = (
+export const getPlaceByUserId = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   const userId = req.params.id;
-  console.log("userId", userId);
-  const places = DUMMY_PLACES.filter((place) => place.creator === userId);
+  let placeToReturn = [];
 
-  if (places == null || places.length === 0) {
+  try {
+    placeToReturn = await PlaceModel.find({ creator: userId });
+  } catch (e) {
+    const error = new HttpError(
+      500,
+      `Something went wrong, Could not find a place ${e}`,
+    );
+
+    return next(error);
+  }
+
+  if (placeToReturn == null || placeToReturn.length === 0) {
     throw new Error("No Place To Return");
   } else {
-    res.json({ places });
+    res.json({ placeToReturn });
   }
 };
 
