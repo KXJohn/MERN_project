@@ -1,6 +1,6 @@
 import axios from "axios";
 import { HttpError } from "../models/http-errors";
-import { Location } from "../controllers/places-controller";
+import { Location } from "../models/place";
 
 export async function getCoordinatesForLocation(
   address: string,

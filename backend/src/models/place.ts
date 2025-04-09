@@ -1,6 +1,21 @@
 import { Schema, model } from "mongoose";
 
-const placeSchema = new Schema({
+export interface Location {
+  lat: number;
+  lng: number;
+}
+
+export interface Place {
+  id?: string;
+  title?: string;
+  description?: string;
+  imageUrl?: string;
+  address?: string;
+  location?: Location;
+  creator?: string;
+}
+
+const placeSchema = new Schema<Place>({
   title: { type: String, required: true },
   description: { type: String, required: true },
   imageUrl: { type: String, required: true },
