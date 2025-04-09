@@ -137,7 +137,7 @@ export const createPlace = async (
   }
 };
 
-export const updatePlace = (
+export const updatePlace = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -150,16 +150,26 @@ export const updatePlace = (
   const { title, description } = req.body;
 
   const { pid } = req.params;
-  const updatedPlace = { ...DUMMY_PLACES.find((place) => place.id === pid) };
-  const placeIndex = DUMMY_PLACES.findIndex(
-    (place) => place.id === updatedPlace.id,
-  );
-  updatedPlace.description = description;
-  updatedPlace.title = title;
+  let updatedPlace = undefined;
 
-  DUMMY_PLACES[placeIndex] = updatedPlace;
+  try {
+    updatedPlace = await PlaceModel.findById(pid);
+  } catch (e) {
+    throw new HttpError(500, "Something went wrong, Could not update a place");
+  }
 
-  res.status(200).json({ place: updatedPlace });
+  if (updatedPlace != null) {
+    updatedPlace.description = description;
+    updatedPlace.title = title;
+    try {
+      await updatedPlace.save();
+    } catch (err) {
+      const error = new HttpError(500, "Update Place Error");
+      return next(error);
+    }
+  }
+
+  res.status(200).json({ place: updatedPlace?.toObject({ getters: true }) });
 };
 
 export const deletePlaceById = (
