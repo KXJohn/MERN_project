@@ -35,18 +35,29 @@ let DUMMY_PLACES: Array<Place> = [
   },
 ];
 
-export const getPlaceById = (
+export const getPlaceById = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   const placeId = req.params.pid;
-  const placeToReturn = DUMMY_PLACES.find((place) => place.id === placeId);
+
+  let placeToReturn;
+  try {
+    placeToReturn = await PlaceModel.findById(placeId);
+  } catch (e) {
+    const error = new HttpError(
+      500,
+      `Something went wrong, Could not find a place ${e}`,
+    );
+
+    return next(error);
+  }
 
   if (placeToReturn == null) {
     throw new Error("No Place To Return");
   } else {
-    res.json({ place: placeToReturn });
+    res.json({ place: placeToReturn.toObject({ getters: true }) });
   }
 };
 
