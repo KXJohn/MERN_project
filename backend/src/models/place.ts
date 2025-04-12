@@ -15,7 +15,7 @@ export interface Place {
   creator?: string;
 }
 
-const placeSchema = new Schema<Place>({
+const placeSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   imageUrl: { type: String, required: true },
