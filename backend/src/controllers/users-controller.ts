@@ -1,27 +1,22 @@
 import { NextFunction, Request, Response } from "express";
-import { v4 as uuid } from "uuid";
 import { HttpError } from "../models/http-errors";
 import { validationResult } from "express-validator";
-import UserSchema from "../models/user";
+import { UserModel, UserDocument } from "../models/user";
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  password: string;
-}
+export const getUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  let users: Array<UserDocument> = [];
+  try {
+    users = await UserModel.find({}, "-password");
+  } catch (err) {
+    const error = new HttpError(500, "Fetching users failed");
+    return next(error);
+  }
 
-const DUMMY_USERS: Array<User> = [
-  {
-    id: "1",
-    name: "Jane Doe",
-    email: "jane.doe@example.com",
-    password: "secureP@ss123",
-  },
-];
-
-export const getUsers = (req: Request, res: Response, next: NextFunction) => {
-  res.json({ users: DUMMY_USERS });
+  res.json({ users: users.map((user) => user.toObject({ getters: true })) });
 };
 
 export const signup = async (
@@ -38,7 +33,7 @@ export const signup = async (
 
   let existingUser = undefined;
   try {
-    existingUser = await UserSchema.findOne({ email });
+    existingUser = await UserModel.findOne({ email });
   } catch (error) {
     const err = new HttpError(500, `${error}`);
     return next(err);
@@ -49,7 +44,7 @@ export const signup = async (
     return next(err);
   }
 
-  const createdUser = new UserSchema({
+  const createdUser = new UserModel({
     name,
     email,
     imageUrl,
@@ -76,7 +71,7 @@ export const login = async (
 
   let existingUser = undefined;
   try {
-    existingUser = await UserSchema.findOne({ email });
+    existingUser = await UserModel.findOne({ email });
   } catch (error) {
     const err = new HttpError(500, `${error}`);
     return next(err);

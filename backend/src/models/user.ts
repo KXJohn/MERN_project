@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, InferSchemaType, Document } from "mongoose";
 
 const userSchema: Schema = new Schema({
   name: { type: String, required: true },
@@ -8,5 +8,7 @@ const userSchema: Schema = new Schema({
   place: { type: String },
 });
 
-const UserModel = model("User", userSchema);
-export default UserModel;
+type User = InferSchemaType<typeof userSchema>;
+type UserDocument = Document & User;
+const UserModel = model<UserDocument>("User", userSchema);
+export { User, UserDocument, UserModel };

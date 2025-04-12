@@ -1,18 +1,8 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Document, InferSchemaType } from "mongoose";
 
 export interface Location {
   lat: number;
   lng: number;
-}
-
-export interface Place {
-  id?: string;
-  title?: string;
-  description?: string;
-  imageUrl?: string;
-  address?: string;
-  location?: Location;
-  creator?: string;
 }
 
 const placeSchema = new Schema({
@@ -27,5 +17,7 @@ const placeSchema = new Schema({
   creator: { type: String, required: true },
 });
 
-const PlaceModel = model("Place", placeSchema);
-export default PlaceModel;
+type Place = InferSchemaType<typeof placeSchema>;
+type PlaceDocument = Place & Document;
+const PlaceModel = model<PlaceDocument>("Place", placeSchema);
+export { Place, PlaceDocument, PlaceModel };

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
 import { HttpError } from "../models/http-errors";
 import { getCoordinatesForLocation } from "../utilities/location";
-import PlaceModel, { Place, Location } from "../models/place";
+import { Place, Location, PlaceModel, PlaceDocument } from "../models/place";
 
 export const getPlaceById = async (
   req: Request,
@@ -11,7 +11,7 @@ export const getPlaceById = async (
 ) => {
   const placeId = req.params.pid;
 
-  let placeToReturn;
+  let placeToReturn: PlaceDocument | null = null;
   try {
     placeToReturn = await PlaceModel.findById(placeId);
   } catch (e) {
@@ -36,7 +36,7 @@ export const getPlaceByUserId = async (
   next: NextFunction,
 ) => {
   const userId = req.params.id;
-  let placeToReturn = [];
+  let placeToReturn: Array<PlaceDocument> = [];
 
   try {
     placeToReturn = await PlaceModel.find({ creator: userId });
