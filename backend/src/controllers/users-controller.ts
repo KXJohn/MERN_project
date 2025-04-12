@@ -34,7 +34,7 @@ export const signup = async (
     throw new HttpError(422, "Invalid Input");
   }
 
-  const { name, email, password, imageUrl } = req.body;
+  const { name, email, password, imageUrl, place } = req.body;
 
   let existingUser = undefined;
   try {
@@ -54,7 +54,7 @@ export const signup = async (
     email,
     imageUrl,
     password,
-    place: "",
+    place,
   });
 
   try {
@@ -67,16 +67,24 @@ export const signup = async (
   res.status(201).json({ user: createdUser.toObject({ getters: true }) });
 };
 
-export const login = (req: Request, res: Response, next: NextFunction) => {
+export const login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const { email, password } = req.body;
 
-  const identifiedUser = DUMMY_USERS.find((u) => u.email === email);
-  if (!identifiedUser) {
-    throw new HttpError(401, "User not found");
+  let existingUser = undefined;
+  try {
+    existingUser = await UserSchema.findOne({ email });
+  } catch (error) {
+    const err = new HttpError(500, `${error}`);
+    return next(err);
   }
 
-  if (identifiedUser.password !== password) {
-    throw new HttpError(401, "Passwords do not match");
+  if (existingUser == null || existingUser.password !== password) {
+    const err = new HttpError(422, "Invalid Credentials, could not log you in");
+    return next(err);
   }
 
   res.json({ message: "logged in" });
