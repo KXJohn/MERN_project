@@ -29,7 +29,7 @@ export const signup = async (
     throw new HttpError(422, "Invalid Input");
   }
 
-  const { name, email, password, imageUrl, place } = req.body;
+  const { name, email, password, imageUrl } = req.body;
 
   let existingUser = undefined;
   try {
@@ -49,7 +49,7 @@ export const signup = async (
     email,
     imageUrl,
     password,
-    place,
+    place: [],
   });
 
   try {
