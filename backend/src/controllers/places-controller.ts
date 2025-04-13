@@ -3,6 +3,8 @@ import { validationResult } from "express-validator";
 import { HttpError } from "../models/http-errors";
 import { getCoordinatesForLocation } from "../utilities/location";
 import { Place, Location, PlaceModel, PlaceDocument } from "../models/place";
+import { UserModel, User, UserDocument } from "../models/user";
+import mongoose from "mongoose";
 
 export const getPlaceById = async (
   req: Request,
@@ -87,6 +89,20 @@ export const createPlace = async (
     next(new HttpError(422, "Invalid Place"));
   }
 
+  let user: UserDocument | null = null;
+
+  try {
+    user = await UserModel.findById(creator);
+  } catch (e) {
+    const error = new HttpError(500, "Creating place failed, please try again");
+    return next(error);
+  }
+
+  if (user == null) {
+    const error = new HttpError(500, "Could not find user from provided Id");
+    return next(error);
+  }
+
   if (newPlace != undefined) {
     const createdPlace = new PlaceModel({
       title: newPlace.title,
@@ -98,7 +114,13 @@ export const createPlace = async (
     });
 
     try {
-      createdPlace.save();
+      const sess = await mongoose.startSession();
+      sess.startTransaction();
+      await createdPlace.save({ session: sess });
+      user.places.push(createdPlace);
+      await user.save({ session: sess });
+      sess.commitTransaction();
+
       res.status(201).json({ place: createdPlace });
     } catch (error) {
       throw new HttpError(500, "Create Place Error");
