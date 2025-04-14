@@ -190,10 +190,9 @@ export const deletePlaceById = async (
     const creator = place.creator as UserDocument;
     if (creator && Array.isArray(creator.places)) {
       creator.places.pull(place._id);
-      await place.creator.save({ session: sess });
+      await creator.save({ session: sess });
     }
-
-    await place.creator.save({ session: sess });
+    await sess.commitTransaction();
   } catch (e) {
     const error = new HttpError(500, "Could not delete place");
     return next(error);
