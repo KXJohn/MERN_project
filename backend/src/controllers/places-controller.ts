@@ -3,7 +3,7 @@ import { validationResult } from "express-validator";
 import { HttpError } from "../models/http-errors";
 import { getCoordinatesForLocation } from "../utilities/location";
 import { Place, Location, PlaceModel, PlaceDocument } from "../models/place";
-import { UserModel, User, UserDocument } from "../models/user";
+import { UserModel, UserDocument } from "../models/user";
 import mongoose from "mongoose";
 
 export const getPlaceById = async (
@@ -169,21 +169,34 @@ export const deletePlaceById = async (
   next: NextFunction,
 ) => {
   const { pid } = req.params;
-  let place = undefined;
+  let place: PlaceDocument | null = null;
 
   try {
-    place = await PlaceModel.findById(pid);
+    place = await PlaceModel.findById(pid).populate("creator");
   } catch (e) {
     throw new HttpError(422, "Could not delete non-exist Place");
   }
 
-  if (place != null) {
-    try {
-      await place.deleteOne();
-    } catch (e) {
-      const error = new HttpError(500, "Could not delete place");
-      return next(error);
+  if (place == null) {
+    const error = new HttpError(500, "Could not find place for this Id");
+    return next(error);
+  }
+
+  try {
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await place.deleteOne({ session: sess });
+    // Remove place from user's places array
+    const creator = place.creator as UserDocument;
+    if (creator && Array.isArray(creator.places)) {
+      creator.places.pull(place._id);
+      await place.creator.save({ session: sess });
     }
+
+    await place.creator.save({ session: sess });
+  } catch (e) {
+    const error = new HttpError(500, "Could not delete place");
+    return next(error);
   }
 
   res.status(200).json({ message: "Deleted Place" });

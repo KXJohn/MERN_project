@@ -1,11 +1,21 @@
-import mongoose, { Schema, model, Document, InferSchemaType } from "mongoose";
+import mongoose, { Schema, model, Document } from "mongoose";
+import { UserDocument } from "./user";
 
 export interface Location {
   lat: number;
   lng: number;
 }
 
-const placeSchema = new Schema({
+interface Place {
+  title: string;
+  description: string;
+  imageUrl: string;
+  address: string;
+  location: Location;
+  creator: UserDocument;
+}
+
+const placeSchema: Schema = new Schema<Place>({
   title: { type: String, required: true },
   description: { type: String, required: true },
   imageUrl: { type: String, required: true },
@@ -17,7 +27,6 @@ const placeSchema = new Schema({
   creator: { type: mongoose.Types.ObjectId, required: true, ref: "User" },
 });
 
-type Place = InferSchemaType<typeof placeSchema>;
 type PlaceDocument = Place & Document;
 const PlaceModel = model<PlaceDocument>("Place", placeSchema);
 export { Place, PlaceDocument, PlaceModel };

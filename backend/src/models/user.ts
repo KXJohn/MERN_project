@@ -1,15 +1,15 @@
-import mongoose, { Schema, model, Document } from "mongoose";
-import { Place } from "./place";
+import mongoose, { Schema, model, Document, Types } from "mongoose";
 
 interface User {
   name: string;
   email: string;
   password: string;
   imageUrl?: string;
-  places: Array<Place>;
+  places: Types.Array<Types.ObjectId>;
 }
+type UserDocument = Document & User;
 
-const userSchema: Schema = new Schema<User>({
+const userSchema: Schema = new Schema<UserDocument>({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true, minlength: 6 },
@@ -17,6 +17,5 @@ const userSchema: Schema = new Schema<User>({
   places: [{ type: mongoose.Types.ObjectId, required: true, ref: "Place" }],
 });
 
-type UserDocument = Document & User;
 const UserModel = model<UserDocument>("User", userSchema);
 export { User, UserDocument, UserModel };
