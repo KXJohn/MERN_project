@@ -66,11 +66,32 @@ export const AuthPage: FC = () => {
 
   const formText = `${showSignUp ? "Sign Up" : "Log In"}`;
 
-  const onSubmit = (values: LogInFormValue) => {
+  const onSubmit = async (values: LogInFormValue) => {
     const value: LogInFormValue = {
       password: values.password,
       email: values.email,
     };
+    if (showSignUp) {
+      try {
+        const response = await fetch("http://localhost:3000/api/user/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: values.name,
+            email: values.email,
+            password: values.password,
+          }),
+        });
+
+        const responseData = await response.json();
+        console.log("responseData", responseData);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
     dispatch(userLogin(value));
   };
 

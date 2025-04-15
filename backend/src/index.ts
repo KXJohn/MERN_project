@@ -6,6 +6,7 @@ import { errorHandler } from "./middleware/errors";
 import usersRoutes from "./routes/users-routes";
 import mongoose from "mongoose";
 import * as process from "node:process";
+import cors from "cors";
 
 dotenv.config();
 
@@ -13,6 +14,13 @@ const app: Express = express();
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true, // if you're sending cookies or auth headers
+  }),
+);
 
 app.use("/api/places", placeRoutes);
 app.use("/api/user", usersRoutes);
