@@ -3,7 +3,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { LogInFormValue } from "@/places/types.ts";
 import { AppDispatch } from "@/store.ts";
 
-const backEndURL = "http://127.0.0.1:5000";
+const backEndURL = "http://localhost:3000";
 
 export const registerUser = createAsyncThunk(
   "auth/register",
@@ -17,7 +17,7 @@ export const registerUser = createAsyncThunk(
       };
 
       await axios.post(
-        `${backEndURL}/auth/register`,
+        `${backEndURL}/api/user/signup`,
         { name, email, password },
         config,
       );

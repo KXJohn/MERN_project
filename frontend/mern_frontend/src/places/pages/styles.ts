@@ -9,7 +9,6 @@ export const FormContainer = styled.div`
     padding: 1rem;
     width: 90%;
     max-width: 40rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
     border-radius: 6px;
     background: white;
   }
@@ -81,7 +80,14 @@ export const FormContainer = styled.div`
     resize: none;
   }
 
-  button {
-    margin-right: 0;
+  .action-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+
+    button:first-child {
+      margin-bottom: 20px;
+    }
   }
 `;

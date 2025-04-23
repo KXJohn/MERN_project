@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { LogInFormValue, LogInFormValueFields } from "@/places/types.ts";
 import { FormContainer } from "@/places/pages/styles.ts";
 import * as Yup from "yup";
@@ -19,7 +19,6 @@ import { useNavigate } from "react-router-dom";
 const AuthContainer = styled(FormContainer)`
   form {
     align-items: end;
-    margin-bottom: 20px;
 
     label {
       padding-right: 20px;
@@ -32,10 +31,16 @@ const AuthContainer = styled(FormContainer)`
     button {
       width: 100%;
     }
+
+    .error-message {
+      font-size: 12px;
+      color: red;
+    }
   }
 `;
 
 const INITIAL_VALUES: LogInFormValue = {
+  name: "",
   email: "",
   password: "",
 };
@@ -63,7 +68,7 @@ export const AuthPage: FC = () => {
   const navigate = useNavigate();
 
   const [showSignUp, toggleToShowSignUp] = useToggle(false);
-
+  const [userData, setUserData] = useState(undefined);
   const formText = `${showSignUp ? "Sign Up" : "Log In"}`;
 
   const onSubmit = async (values: LogInFormValue) => {
@@ -73,7 +78,7 @@ export const AuthPage: FC = () => {
     };
     if (showSignUp) {
       try {
-        const response = await fetch("http://localhost:3000/api/user/signup", {
+        await fetch("http://localhost:3000/api/user/signup", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -83,16 +88,19 @@ export const AuthPage: FC = () => {
             email: values.email,
             password: values.password,
           }),
+        }).then(async (data) => {
+          const response = await data.json();
+          if (response != null) {
+            setUserData(response);
+            toggleToShowSignUp();
+          }
         });
-
-        const responseData = await response.json();
-        console.log("responseData", responseData);
       } catch (e) {
         console.error(e);
       }
+    } else {
+      dispatch(userLogin(value));
     }
-
-    dispatch(userLogin(value));
   };
 
   useEffect(() => {
@@ -112,6 +120,11 @@ export const AuthPage: FC = () => {
     <Card>
       <AuthContainer className="place-form-container">
         <h2>{formText}</h2>
+        {userInfo != null && (
+          <p className="error-message">
+            Hi {userInfo.name}, you have successfully signup, please login here
+          </p>
+        )}
         <Formik
           initialValues={INITIAL_VALUES}
           validationSchema={schema}
@@ -181,20 +194,22 @@ export const AuthPage: FC = () => {
                     <div className="error-message">{errors.password}</div>
                   ) : null}
                 </div>
-                <Button
-                  type="submit"
-                  disabled={Object.keys(errors).length > 0 || loading}
-                  onClick={handleSubmit}
-                >
-                  {loading ? <Spinner /> : formText}
-                </Button>
+                <div className="action-col">
+                  <Button
+                    type="submit"
+                    disabled={Object.keys(errors).length > 0 || loading}
+                    onClick={handleSubmit}
+                  >
+                    {loading ? <Spinner /> : formText}
+                  </Button>
+                  <Button type="submit" onClick={toggleToShowSignUp}>
+                    {`Switch To ${showSignUp ? "LogIn" : "Sign Up"}`}
+                  </Button>
+                </div>
               </Form>
             );
           }}
         </Formik>
-        <Button type="submit" onClick={toggleToShowSignUp}>
-          {`Switch To ${showSignUp ? "LogIn" : "Sign Up"}`}
-        </Button>
       </AuthContainer>
     </Card>
   );
