@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import { LogInFormValue, LogInFormValueFields } from "@/places/types.ts";
 import { FormContainer } from "@/places/pages/styles.ts";
 import * as Yup from "yup";
@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 import { useAppDispatch } from "@/store.ts";
 import { RootState } from "@/store.ts";
 import { Spinner } from "@/shared/components/UIElements/Spinner.tsx";
-import { userLogin } from "@/features/auth/authActions.ts";
+import { userLogin, registerUser } from "@/features/auth/authActions.ts";
 import { useNavigate } from "react-router-dom";
 
 const AuthContainer = styled(FormContainer)`
@@ -68,7 +68,6 @@ export const AuthPage: FC = () => {
   const navigate = useNavigate();
 
   const [showSignUp, toggleToShowSignUp] = useToggle(false);
-  const [userData, setUserData] = useState(undefined);
   const formText = `${showSignUp ? "Sign Up" : "Log In"}`;
 
   const onSubmit = async (values: LogInFormValue) => {
@@ -77,27 +76,12 @@ export const AuthPage: FC = () => {
       email: values.email,
     };
     if (showSignUp) {
-      try {
-        await fetch("http://localhost:3000/api/user/signup", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: values.name,
-            email: values.email,
-            password: values.password,
-          }),
-        }).then(async (data) => {
-          const response = await data.json();
-          if (response != null) {
-            setUserData(response);
-            toggleToShowSignUp();
-          }
-        });
-      } catch (e) {
-        console.error(e);
-      }
+      const registerUserValue: LogInFormValue = {
+        name: values.name,
+        email: values.email,
+        password: values.password,
+      };
+      dispatch(registerUser(registerUserValue));
     } else {
       dispatch(userLogin(value));
     }
@@ -111,7 +95,7 @@ export const AuthPage: FC = () => {
   }, [showSignUp, success, toggleToShowSignUp]);
 
   useEffect(() => {
-    if (userInfo.token.length > 0) {
+    if ((userInfo.token ?? "").length > 0) {
       navigate(`/${userInfo.id}`);
     }
   }, [navigate, userInfo]);
@@ -120,11 +104,6 @@ export const AuthPage: FC = () => {
     <Card>
       <AuthContainer className="place-form-container">
         <h2>{formText}</h2>
-        {userInfo != null && (
-          <p className="error-message">
-            Hi {userInfo.name}, you have successfully signup, please login here
-          </p>
-        )}
         <Formik
           initialValues={INITIAL_VALUES}
           validationSchema={schema}

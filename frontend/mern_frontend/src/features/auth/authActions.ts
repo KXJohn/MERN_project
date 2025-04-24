@@ -30,7 +30,7 @@ export const registerUser = createAsyncThunk(
 export interface UserData {
   email: string;
   name: string;
-  token: string;
+  token?: string;
   id: string;
 }
 
@@ -72,7 +72,7 @@ export const userLogin = createAsyncThunk<
     localStorage.setItem("userToken", data.userToken);
     return data;
   } catch (error: unknown) {
-    // return custom error message from API if any
+    // return a custom error message from API if any
     return rejectWithValue(error as MyKnownError);
   }
 });

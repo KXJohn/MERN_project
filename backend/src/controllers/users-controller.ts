@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { HttpError } from "../models/http-errors";
 import { validationResult } from "express-validator";
 import { UserModel, UserDocument } from "../models/user";
+import { hash, compare } from "bcrypt";
+import { sign } from "jsonwebtoken";
 
 export const getUsers = async (
   req: Request,
@@ -44,11 +46,13 @@ export const signup = async (
     return next(err);
   }
 
+  const hashedPassword = await hash(password, 10);
+
   const createdUser = new UserModel({
     name,
     email,
     imageUrl,
-    password,
+    password: hashedPassword,
     place: [],
   });
 
@@ -77,10 +81,26 @@ export const login = async (
     return next(err);
   }
 
-  if (existingUser == null || existingUser.password !== password) {
-    const err = new HttpError(422, "Invalid Credentials, could not log you in");
+  if (existingUser == null) {
+    const err = new HttpError(422, "User not found, please sign up first");
     return next(err);
   }
 
-  res.json({ message: "logged in" });
+  const passwordMatch = await compare(password, existingUser.password);
+
+  if (!passwordMatch) {
+    const err = new HttpError(401, "Invalid Credentials, could not log you in");
+    return next(err);
+  }
+
+  const token = sign({ userId: existingUser._id }, "your-secret-key", {
+    expiresIn: "1h",
+  });
+
+  res.json({
+    email: existingUser.email,
+    name: existingUser.name,
+    id: existingUser._id,
+    token,
+  });
 };
