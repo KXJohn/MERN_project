@@ -2,8 +2,7 @@ import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { LogInFormValue } from "@/places/types.ts";
 import { AppDispatch } from "@/store.ts";
-
-const backEndURL = "http://localhost:3000";
+import { SERVER_URL } from "@/constants.ts";
 
 export const registerUser = createAsyncThunk(
   "auth/register",
@@ -17,7 +16,7 @@ export const registerUser = createAsyncThunk(
       };
 
       await axios.post(
-        `${backEndURL}/api/user/signup`,
+        `${SERVER_URL}/api/user/signup`,
         { name, email, password },
         config,
       );
@@ -32,6 +31,8 @@ export interface UserData {
   name: string;
   token?: string;
   id: string;
+  imageUrl?: string;
+  placeCount?: number;
 }
 
 interface MyKnownError {
@@ -64,7 +65,7 @@ export const userLogin = createAsyncThunk<
       },
     };
     const { data } = await axios.post(
-      `${backEndURL}/api/user/login`,
+      `${SERVER_URL}/api/user/login`,
       { email, password },
       config,
     );

@@ -1,11 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "@/store.ts";
+import { SERVER_URL } from "@/constants.ts";
 
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
     // base url of backend API
-    baseUrl: "http://127.0.0.1:5000/",
+    baseUrl: SERVER_URL,
     // prepareHeaders is used to configure the header of every request and gives access to getState which we use to include the token from the store
     prepareHeaders: (headers, { getState }) => {
       const state = getState() as RootState;
@@ -20,7 +21,7 @@ export const authApi = createApi({
   endpoints: (builder) => ({
     getUserDetails: builder.query({
       query: () => ({
-        url: "api/user/profile",
+        url: "api/user",
         method: "GET",
       }),
     }),

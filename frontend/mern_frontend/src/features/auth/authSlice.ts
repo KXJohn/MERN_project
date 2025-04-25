@@ -19,7 +19,14 @@ interface AuthState {
 
 const initialState: AuthState = {
   loading: false,
-  userInfo: { id: "", token: "", name: "", email: "" },
+  userInfo: {
+    id: "",
+    token: "",
+    name: "",
+    email: "",
+    imageUrl: "",
+    placeCount: 0,
+  },
   userToken: userToken ?? "",
   error: "",
   success: false,
@@ -62,7 +69,7 @@ const authSlice = createSlice({
       state.loading = false;
       state.success = true;
       state.userInfo = payload;
-      state.userToken = payload.token;
+      state.userToken = payload.token ?? "";
     });
     builder.addCase(userLogin.rejected, (state, action) => {
       state.loading = false;
