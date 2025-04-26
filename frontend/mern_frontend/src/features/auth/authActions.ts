@@ -3,6 +3,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { LogInFormValue } from "@/places/types.ts";
 import { AppDispatch } from "@/store.ts";
 import { SERVER_URL } from "@/constants.ts";
+import { MyKnownError } from "@/features/common.ts";
 
 export const registerUser = createAsyncThunk(
   "auth/register",
@@ -33,11 +34,6 @@ export interface UserData {
   id: string;
   imageUrl?: string;
   placeCount?: number;
-}
-
-interface MyKnownError {
-  errorMessage: string;
-  // ...
 }
 
 interface UserAttributes {
