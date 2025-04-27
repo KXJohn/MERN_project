@@ -43,7 +43,7 @@ interface UserAttributes {
 
 export const userLogin = createAsyncThunk<
   // Return type of the payload creator
-  UserData,
+  Array<UserData>,
   // First argument to the payload creator
   UserAttributes,
   // Types for ThunkAPI

@@ -5,9 +5,10 @@ import { Outlet, NavLink } from "react-router-dom";
 import { RootState } from "@/store.ts";
 
 export const ProtectedRoute: FC = () => {
-  const { userInfo } = useSelector((state: RootState) => state.auth);
+  const user = useSelector((state: RootState) => state.auth.userInfo);
+  const isLoggedIn = user.length > 0;
 
-  if (!userInfo) {
+  if (!isLoggedIn) {
     return (
       <div className="unauthorized">
         <h1>Unauthorized :(</h1>

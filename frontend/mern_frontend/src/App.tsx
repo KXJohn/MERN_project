@@ -15,14 +15,13 @@ function App() {
       <MainNavigation />
       <main>
         <Routes>
-          <Route path="/" element={<User />} />
-          <Route path="/:userId/places" element={<UserPlaces />}></Route>
-          <Route path="/places/new" element={<NewPlace />} />
-          <Route path="/places/:placeId" element={<UpdatePlace />} />
           <Route path="/auth" element={<AuthPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<User />} />
+            <Route path="/:userId/places" element={<UserPlaces />}></Route>
+            <Route path="/places/new" element={<NewPlace />} />
+            <Route path="/places/:placeId" element={<UpdatePlace />} />
           </Route>
         </Routes>
       </main>
