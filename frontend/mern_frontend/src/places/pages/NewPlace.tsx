@@ -1,4 +1,4 @@
-import { FC, useMemo } from "react";
+import { FC, useMemo, useState } from "react";
 import { Field, Form, Formik } from "formik";
 import { NewPlaceFormValue, NewPlaceFormValueFields, Place } from "../types.ts";
 import {
@@ -10,6 +10,10 @@ import { stringIsNotNullOrWhiteSpace } from "@/shared/utilities.ts";
 import classNames from "classnames";
 import { Button } from "@/shared/components/FormElements/Button.tsx";
 import { FormContainer } from "@/places/pages/styles.ts";
+import axios from "axios";
+import { SERVER_URL } from "@/constants.ts";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store.ts";
 
 const INITIAL_VALUES: NewPlaceFormValue = {
   title: "",
@@ -20,13 +24,53 @@ const INITIAL_VALUES: NewPlaceFormValue = {
   lng: undefined,
 };
 
+interface CommandState {
+  isLoading: boolean;
+  error: string;
+  data?: Place;
+}
+
 interface Props {
   place?: Place;
 }
 
 export const NewPlace: FC<Props> = ({ place }) => {
-  const onSubmit = (values: NewPlaceFormValue) => {
-    console.log("values", values);
+  const [commandState, setCommandState] = useState<CommandState>({
+    isLoading: false,
+    error: "",
+  });
+
+  const currentUserId = useSelector(
+    (state: RootState) => state.auth.userInfo.id,
+  );
+
+  const onSubmit = async (values: NewPlaceFormValue) => {
+    setCommandState({ ...commandState, isLoading: true });
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    await axios
+      .post(
+        `${SERVER_URL}/api/places/create`,
+        {
+          title: values.title,
+          address: values.address,
+          imageUrl: values.imageUrl,
+          description: values.description,
+          location: { lat: values.lat, lng: values.lng },
+          creator: currentUserId,
+        },
+        config,
+      )
+      .then(() => {
+        setCommandState({ ...commandState, isLoading: false });
+      })
+      .catch((e) => {
+        setCommandState({ isLoading: false, error: e });
+      });
   };
 
   const placeFormValue: NewPlaceFormValue = useMemo(
@@ -195,7 +239,9 @@ export const NewPlace: FC<Props> = ({ place }) => {
               </div>
               <Button
                 type="submit"
-                disabled={Object.keys(errors).length > 0}
+                disabled={
+                  Object.keys(errors).length > 0 || commandState.isLoading
+                }
                 onClick={handleSubmit}
               >
                 Submit
