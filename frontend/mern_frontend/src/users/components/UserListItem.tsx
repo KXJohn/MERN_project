@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Users } from "./types.ts";
+import { UserData } from "@/features/auth/authActions.ts";
 import { UserItemContainer } from "./style.ts";
 import { Avatar } from "@/shared/components/UIElements/Avatar.tsx";
 import { Link } from "react-router-dom";
@@ -7,7 +7,13 @@ import { Card } from "@/shared/components/UIElements/Card.tsx";
 import { stringIsNotNullOrWhiteSpace } from "@/shared/utilities.ts";
 import { DEFAULT_USER_AVATAR_URL } from "@/constants.ts";
 
-export const UserListItem: FC<Users> = ({ id, name, imageUrl, placeCount }) => {
+export const UserListItem: FC<UserData> = ({
+  id,
+  name,
+  imageUrl,
+  placeCount,
+}) => {
+  console.log("name", name);
   return (
     <UserItemContainer className="user-item">
       <div className="user-item-content">

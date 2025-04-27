@@ -1,11 +1,11 @@
 import { FC } from "react";
-import { Users } from "./types.ts";
 import { UserListItem } from "./UserListItem.tsx";
 import { UserListContainer } from "./style.ts";
 import { Card } from "@/shared/components/UIElements/Card.tsx";
+import { UserData } from "@/features/auth/authActions.ts";
 
 interface UsersListProps {
-  users: ReadonlyArray<Users>;
+  users: ReadonlyArray<UserData>;
 }
 
 export const UsersList: FC<UsersListProps> = ({ users }) => {
@@ -22,15 +22,18 @@ export const UsersList: FC<UsersListProps> = ({ users }) => {
   return (
     <UserListContainer>
       <ul className="users-list">
-        {users.map((d) => (
-          <UserListItem
-            key={d.id}
-            imageUrl={d.imageUrl}
-            id={d.id}
-            name={d.name}
-            placeCount={d.placeCount}
-          />
-        ))}
+        {users.map((d) => {
+          return (
+            <UserListItem
+              key={d.id}
+              email={d.email}
+              imageUrl={d.imageUrl}
+              id={d.id}
+              name={d.name}
+              placeCount={d.placeCount}
+            />
+          );
+        })}
       </ul>
     </UserListContainer>
   );

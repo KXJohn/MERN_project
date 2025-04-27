@@ -90,4 +90,8 @@ export const FormContainer = styled.div`
       margin-bottom: 20px;
     }
   }
+
+  .error-message {
+    height: 30px;
+  }
 `;
