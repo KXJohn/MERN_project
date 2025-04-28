@@ -18,6 +18,7 @@ export const UserItemContainer = styled.li`
   min-width: 17.5rem;
   display: flex;
   align-items: center;
+  padding-top: 10px;
 
   a {
     display: flex;

@@ -56,15 +56,11 @@ const schema = Yup.object().shape({
 });
 
 export const AuthPage: FC = () => {
-  const {
-    loading,
-    // error: registerError,
-    userInfo,
-    success,
-  } = useSelector((state: RootState) => state.auth);
+  const { loading, error, userInfo, success } = useSelector(
+    (state: RootState) => state.auth,
+  );
 
   const dispatch = useAppDispatch();
-
   const navigate = useNavigate();
 
   const [showSignUp, toggleToShowSignUp] = useToggle(false);
@@ -96,7 +92,7 @@ export const AuthPage: FC = () => {
 
   useEffect(() => {
     if ((userInfo.token ?? "").length > 0) {
-      navigate(`/${userInfo.id}`);
+      navigate(`/${userInfo?.id}`);
     }
   }, [navigate, userInfo]);
 
@@ -185,6 +181,9 @@ export const AuthPage: FC = () => {
                     {`Switch To ${showSignUp ? "LogIn" : "Sign Up"}`}
                   </Button>
                 </div>
+                {stringIsNotNullOrWhiteSpace(error) && (
+                  <span className="error-message">{error}</span>
+                )}
               </Form>
             );
           }}

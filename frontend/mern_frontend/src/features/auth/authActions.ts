@@ -43,7 +43,7 @@ interface UserAttributes {
 
 export const userLogin = createAsyncThunk<
   // Return type of the payload creator
-  Array<UserData>,
+  UserData,
   // First argument to the payload creator
   UserAttributes,
   // Types for ThunkAPI
@@ -66,7 +66,7 @@ export const userLogin = createAsyncThunk<
       config,
     );
     // store user's token in local storage
-    localStorage.setItem("userToken", data.userToken);
+    localStorage.setItem("userToken", data.token);
     return data;
   } catch (error: unknown) {
     // return a custom error message from API if any
