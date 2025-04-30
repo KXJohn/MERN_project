@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useCallback, useEffect, useRef } from "react";
 import { LogInFormValue, LogInFormValueFields } from "@/places/types.ts";
 import { FormContainer } from "@/places/pages/styles.ts";
 import * as Yup from "yup";
@@ -14,7 +14,9 @@ import { useAppDispatch } from "@/store.ts";
 import { RootState } from "@/store.ts";
 import { Spinner } from "@/shared/components/UIElements/Spinner.tsx";
 import { userLogin, registerUser } from "@/features/auth/authActions.ts";
+import { logoutUser } from "@/features/auth/authSlice.ts";
 import { useNavigate } from "react-router-dom";
+import ErrorModal from "@/shared/components/UIElements/ErrorModal.tsx";
 
 const AuthContainer = styled(FormContainer)`
   form {
@@ -56,6 +58,8 @@ const schema = Yup.object().shape({
 });
 
 export const AuthPage: FC = () => {
+  const ref = useRef<HTMLDivElement>(null);
+
   const { loading, error, userInfo, success } = useSelector(
     (state: RootState) => state.auth,
   );
@@ -82,6 +86,10 @@ export const AuthPage: FC = () => {
       dispatch(userLogin(value));
     }
   };
+
+  const onClearErrorMessage = useCallback(() => {
+    dispatch(logoutUser());
+  }, [dispatch]);
 
   useEffect(() => {
     if (success && showSignUp) {
@@ -189,6 +197,9 @@ export const AuthPage: FC = () => {
           }}
         </Formik>
       </AuthContainer>
+      {stringIsNotNullOrWhiteSpace(error) && ref != null ? (
+        <ErrorModal error={error} ref={ref} onClear={onClearErrorMessage} />
+      ) : null}
     </Card>
   );
 };
