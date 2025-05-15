@@ -98,10 +98,18 @@ export const login = async (
     expiresIn: "1h",
   });
 
+  // Set JWT as an HttpOnly cookie
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', // secure in production
+    sameSite: 'strict',
+    maxAge: 3600000, // 1 hour in milliseconds
+  });
+
   res.json({
     email: existingUser.email,
     name: existingUser.name,
     id: existingUser._id,
-    token,
+    // Don't send token in the response body
   });
 };

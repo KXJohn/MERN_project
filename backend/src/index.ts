@@ -7,6 +7,7 @@ import usersRoutes from "./routes/users-routes";
 import mongoose from "mongoose";
 import * as process from "node:process";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
@@ -14,11 +15,12 @@ const app: Express = express();
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 app.use(
   cors({
     origin: "http://localhost:5173",
-    credentials: true, // if you're sending cookies or auth headers
+    credentials: true, // Required for cookies
   }),
 );
 

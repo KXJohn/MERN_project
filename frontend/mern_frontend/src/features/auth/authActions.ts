@@ -40,6 +40,7 @@ export const registerUser = createAsyncThunk(
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials: true // Required for cookies to be sent with request
       };
 
       const { data } = await axios.post(
@@ -55,6 +56,46 @@ export const registerUser = createAsyncThunk(
       });
     }
   },
+);
+
+export const checkAuthStatus = createAsyncThunk(
+  "auth/checkStatus",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(
+        `${SERVER_URL}/api/user/profile`,
+        { withCredentials: true }
+      );
+      
+      if (data && data.id) {
+        return data;
+      } else {
+        return rejectWithValue({ message: "Not authenticated" });
+      }
+    } catch (error: any) {
+      return rejectWithValue({
+        message: "Not authenticated"
+      });
+    }
+  }
+);
+
+export const logoutUserAction = createAsyncThunk(
+  "auth/logout", 
+  async (_, { rejectWithValue }) => {
+    try {
+      await axios.post(
+        `${SERVER_URL}/api/user/logout`,
+        {},
+        { withCredentials: true }
+      );
+      return { success: true };
+    } catch (error: any) {
+      return rejectWithValue({
+        message: getErrorMessage(error)
+      });
+    }
+  }
 );
 
 export const userLogin = createAsyncThunk<
@@ -79,12 +120,14 @@ export const userLogin = createAsyncThunk<
     const { data } = await axios.post(
       `${SERVER_URL}/api/user/login`,
       { email, password },
-      config,
+      {
+        ...config,
+        withCredentials: true // Required for cookies to be sent with request
+      }
     );
     
-    if (data && data.token) {
-      // store user's token in local storage
-      localStorage.setItem("userToken", data.token);
+    // Don't need to handle token storage manually anymore since we're using cookies
+    if (data && data.id) {
       return data;
     } else {
       return rejectWithValue({ message: "Invalid response from server" });

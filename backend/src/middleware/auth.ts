@@ -22,19 +22,11 @@ export function verifyToken(
   next: NextFunction,
 ) {
   try {
-    const authHeader = req.header("Authorization");
-    
-    if (!authHeader) {
-      return res.status(401).json({ error: "Access denied. No token provided." });
-    }
-    
-    // Extract the token from the Bearer format
-    const token = authHeader.startsWith("Bearer ") 
-      ? authHeader.slice(7) 
-      : authHeader;
+    // Get token from cookie
+    const token = req.cookies.token;
     
     if (!token) {
-      return res.status(401).json({ error: "Access denied. Invalid token format." });
+      return res.status(401).json({ error: "Access denied. Please login." });
     }
     
     // Verify the token
@@ -42,7 +34,8 @@ export function verifyToken(
     req.userId = decoded.userId;
     next();
   } catch (error) {
-    console.error("Token verification error:", error);
+    // Don't log the full error details in production
+    console.error("Token verification error");
     res.status(401).json({ error: "Invalid or expired token. Please login again." });
   }
 }

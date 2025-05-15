@@ -19,6 +19,16 @@ router.post(
   signup,
 );
 
+// Logout route
+router.post("/logout", (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict'
+  });
+  res.status(200).json({ message: "Logged out successfully" });
+});
+
 // Protected route to get current user information
 router.get("/profile", verifyToken, async (req: RequestWithUserId, res, next) => {
   try {

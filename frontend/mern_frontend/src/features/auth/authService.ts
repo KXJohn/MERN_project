@@ -7,16 +7,8 @@ export const authApi = createApi({
   baseQuery: fetchBaseQuery({
     // base url of backend API
     baseUrl: SERVER_URL,
-    // prepareHeaders is used to configure the header of every request and gives access to getState which we use to include the token from the store
-    prepareHeaders: (headers, { getState }) => {
-      const state = getState() as RootState;
-      const token = state.auth.userToken;
-      if (token) {
-        // include token in req header - using "Authorization" to match backend
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
+    // We don't need to set the Authorization header anymore because we're using cookies
+    credentials: 'include', // This allows sending cookies with requests
   }),
   endpoints: (builder) => ({
     getUserDetails: builder.query({

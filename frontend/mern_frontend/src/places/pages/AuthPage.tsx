@@ -14,7 +14,8 @@ import { useAppDispatch } from "@/store.ts";
 import { RootState } from "@/store.ts";
 import { Spinner } from "@/shared/components/UIElements/Spinner.tsx";
 import { userLogin, registerUser } from "@/features/auth/authActions.ts";
-import { logoutUser, clearError } from "@/features/auth/authSlice.ts";
+import { clearError } from "@/features/auth/authSlice.ts";
+import { logoutUserAction } from "@/features/auth/authActions.ts";
 import { useNavigate } from "react-router-dom";
 import ErrorModal from "@/shared/components/UIElements/ErrorModal.tsx";
 
@@ -60,7 +61,7 @@ const schema = Yup.object().shape({
 export const AuthPage: FC = () => {
   const ref = useRef<HTMLDivElement>(null);
 
-  const { loading, error, userInfo, success, userToken } = useSelector(
+  const { loading, error, userInfo, success, isAuthenticated } = useSelector(
     (state: RootState) => state.auth,
   );
 
@@ -99,11 +100,11 @@ export const AuthPage: FC = () => {
   }, [showSignUp, success, toggleToShowSignUp]);
 
   useEffect(() => {
-    // If user is logged in with a token, redirect to home page
-    if (userInfo && userInfo.id && userToken && userToken.length > 0) {
+    // If user is authenticated, redirect to home page
+    if (isAuthenticated && userInfo && userInfo.id) {
       navigate("/");
     }
-  }, [navigate, userInfo, userToken]);
+  }, [navigate, userInfo, isAuthenticated]);
 
   return (
     <Card>
