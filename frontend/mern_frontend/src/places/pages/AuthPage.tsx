@@ -14,7 +14,7 @@ import { useAppDispatch } from "@/store.ts";
 import { RootState } from "@/store.ts";
 import { Spinner } from "@/shared/components/UIElements/Spinner.tsx";
 import { userLogin, registerUser } from "@/features/auth/authActions.ts";
-import { logoutUser } from "@/features/auth/authSlice.ts";
+import { logoutUser, clearError } from "@/features/auth/authSlice.ts";
 import { useNavigate } from "react-router-dom";
 import ErrorModal from "@/shared/components/UIElements/ErrorModal.tsx";
 
@@ -60,7 +60,7 @@ const schema = Yup.object().shape({
 export const AuthPage: FC = () => {
   const ref = useRef<HTMLDivElement>(null);
 
-  const { loading, error, userInfo, success } = useSelector(
+  const { loading, error, userInfo, success, userToken } = useSelector(
     (state: RootState) => state.auth,
   );
 
@@ -88,21 +88,22 @@ export const AuthPage: FC = () => {
   };
 
   const onClearErrorMessage = useCallback(() => {
-    dispatch(logoutUser());
+    dispatch(clearError());
   }, [dispatch]);
 
   useEffect(() => {
+    // If registration is successful, switch to login screen
     if (success && showSignUp) {
-      // if register success, switch register screen to login screen
       toggleToShowSignUp();
     }
   }, [showSignUp, success, toggleToShowSignUp]);
 
   useEffect(() => {
-    if ((userInfo.token ?? "").length > 0) {
-      navigate(`/${userInfo?.id}`);
+    // If user is logged in with a token, redirect to home page
+    if (userInfo && userInfo.id && userToken && userToken.length > 0) {
+      navigate("/");
     }
-  }, [navigate, userInfo]);
+  }, [navigate, userInfo, userToken]);
 
   return (
     <Card>

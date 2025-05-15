@@ -93,7 +93,8 @@ export const login = async (
     return next(err);
   }
 
-  const token = sign({ userId: existingUser._id }, "your-secret-key", {
+  const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+  const token = sign({ userId: existingUser._id }, JWT_SECRET, {
     expiresIn: "1h",
   });
 

@@ -1,7 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import { verify } from "jsonwebtoken";
+import dotenv from "dotenv";
 
-interface RequestWithUserId extends Request {
+dotenv.config();
+
+// Get the JWT secret from environment variables or use a fallback for development
+const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+
+// Extend Request type to include userId
+export interface RequestWithUserId extends Request {
   userId?: string;
 }
 
@@ -14,13 +21,28 @@ export function verifyToken(
   res: Response,
   next: NextFunction,
 ) {
-  const token = req.header("Authorization");
-  if (!token) return res.status(401).json({ error: "Access denied" });
   try {
-    const decoded = verify(token, "your-secret-key") as JwtPayload;
+    const authHeader = req.header("Authorization");
+    
+    if (!authHeader) {
+      return res.status(401).json({ error: "Access denied. No token provided." });
+    }
+    
+    // Extract the token from the Bearer format
+    const token = authHeader.startsWith("Bearer ") 
+      ? authHeader.slice(7) 
+      : authHeader;
+    
+    if (!token) {
+      return res.status(401).json({ error: "Access denied. Invalid token format." });
+    }
+    
+    // Verify the token
+    const decoded = verify(token, JWT_SECRET) as JwtPayload;
     req.userId = decoded.userId;
     next();
   } catch (error) {
-    res.status(401).json({ error: "Invalid token" });
+    console.error("Token verification error:", error);
+    res.status(401).json({ error: "Invalid or expired token. Please login again." });
   }
 }

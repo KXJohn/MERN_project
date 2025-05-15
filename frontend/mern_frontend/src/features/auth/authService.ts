@@ -12,18 +12,24 @@ export const authApi = createApi({
       const state = getState() as RootState;
       const token = state.auth.userToken;
       if (token) {
-        // include token in req header
-        headers.set("authorization", `Bearer ${token}`);
-        return headers;
+        // include token in req header - using "Authorization" to match backend
+        headers.set("Authorization", `Bearer ${token}`);
       }
+      return headers;
     },
   }),
   endpoints: (builder) => ({
     getUserDetails: builder.query({
       query: () => ({
-        url: "api/user",
+        url: "api/user/profile",
         method: "GET",
       }),
+      transformErrorResponse: (response) => {
+        return {
+          status: response.status,
+          message: 'Failed to fetch user details'
+        };
+      },
     }),
   }),
 });

@@ -5,28 +5,6 @@ import { AppDispatch } from "@/store.ts";
 import { SERVER_URL } from "@/constants.ts";
 import { MyKnownError } from "@/features/common.ts";
 
-export const registerUser = createAsyncThunk(
-  "auth/register",
-  async (registerInfo: LogInFormValue, { rejectWithValue }) => {
-    const { name, email, password } = registerInfo;
-    try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-
-      await axios.post(
-        `${SERVER_URL}/api/user/signup`,
-        { name, email, password },
-        config,
-      );
-    } catch (error: unknown) {
-      return rejectWithValue(error as Error);
-    }
-  },
-);
-
 export interface UserData {
   email: string;
   name: string;
@@ -40,6 +18,44 @@ interface UserAttributes {
   password: string;
   email: string;
 }
+
+// Helper to extract error message from axios error
+const getErrorMessage = (error: any): string => {
+  if (error.response?.data?.error) {
+    return error.response.data.error;
+  } else if (error.response?.data?.message) {
+    return error.response.data.message;
+  } else if (error.message) {
+    return error.message;
+  }
+  return 'An unknown error occurred';
+};
+
+export const registerUser = createAsyncThunk(
+  "auth/register",
+  async (registerInfo: LogInFormValue, { rejectWithValue }) => {
+    const { name, email, password } = registerInfo;
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      const { data } = await axios.post(
+        `${SERVER_URL}/api/user/signup`,
+        { name, email, password },
+        config,
+      );
+      
+      return data;
+    } catch (error: any) {
+      return rejectWithValue({
+        message: getErrorMessage(error)
+      });
+    }
+  },
+);
 
 export const userLogin = createAsyncThunk<
   // Return type of the payload creator
@@ -65,11 +81,17 @@ export const userLogin = createAsyncThunk<
       { email, password },
       config,
     );
-    // store user's token in local storage
-    localStorage.setItem("userToken", data.token);
-    return data;
-  } catch (error: unknown) {
-    // return a custom error message from API if any
-    return rejectWithValue(error as MyKnownError);
+    
+    if (data && data.token) {
+      // store user's token in local storage
+      localStorage.setItem("userToken", data.token);
+      return data;
+    } else {
+      return rejectWithValue({ message: "Invalid response from server" });
+    }
+  } catch (error: any) {
+    return rejectWithValue({
+      message: getErrorMessage(error)
+    });
   }
 });
