@@ -33,13 +33,15 @@ router.post("/logout", (req, res) => {
 router.get("/profile", verifyToken, async (req: RequestWithUserId, res, next) => {
   try {
     if (!req.userId) {
-      return res.status(401).json({ error: "Authentication failed" });
+      res.status(401).json({ error: "Authentication failed" });
+      return;
     }
     
     const user = await UserModel.findById(req.userId, "-password"); // Exclude password
     
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      res.status(404).json({ error: "User not found" });
+      return;
     }
     
     res.json({

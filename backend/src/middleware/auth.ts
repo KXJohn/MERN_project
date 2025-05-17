@@ -20,13 +20,14 @@ export function verifyToken(
   req: RequestWithUserId,
   res: Response,
   next: NextFunction,
-) {
+): void {
   try {
     // Get token from cookie
     const token = req.cookies.token;
     
     if (!token) {
-      return res.status(401).json({ error: "Access denied. Please login." });
+      res.status(401).json({ error: "Access denied. Please login." });
+      return;
     }
     
     // Verify the token
